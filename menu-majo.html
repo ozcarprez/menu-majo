@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menú - Restaurante Majo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0a0a0a;
+    color: #e8e4df;
+    min-height: 100vh;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 32px 20px 24px;
+    background: #4a4a4a;
+  }
+
+  .hero-logo-img {
+    max-width: 280px;
+    width: 80%;
+    margin-bottom: 16px;
+  }
+
+  .hero p {
+    color: #ccc;
+    font-size: 14px;
+  }
+
+  .hero .direccion {
+    color: #aaa;
+    font-size: 12px;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* CATEGORÍAS */
+  .categorias {
+    display: flex;
+    gap: 8px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: sticky;
+    top: 0;
+    background: #0a0a0a;
+    z-index: 50;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .categorias::-webkit-scrollbar { display: none; }
+
+  .cat-btn {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #2a2a2a;
+    background: transparent;
+    color: #888;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .cat-btn.active {
+    background: #5ba88c;
+    border-color: #5ba88c;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* CONTENIDO */
+  .menu-content {
+    padding: 8px 16px 140px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .cat-section { display: none; }
+  .cat-section.active { display: block; }
+
+  .cat-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    padding: 20px 0 4px;
+  }
+
+  .cat-subtitle {
+    font-size: 12px;
+    color: #5ba88c;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+
+  /* PLATILLO */
+  .platillo {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid #141414;
+    align-items: center;
+  }
+
+  .platillo-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: #141414;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .platillo-info { flex: 1; min-width: 0; }
+
+  .platillo-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #eee;
+    margin-bottom: 2px;
+  }
+
+  .platillo-desc {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.3;
+  }
+
+  .platillo-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .add-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid #333;
+    background: transparent;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .add-btn:hover { background: #5ba88c; border-color: #5ba88c; }
+
+  .cantidad-inline {
+    display: none;
+    align-items: center;
+    gap: 6px;
+  }
+  .cantidad-inline.show { display: flex; }
+
+  .qi-btn {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid #333;
+    background: transparent;
+    color: #fff; font-size: 15px; font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qi-btn:hover { background: #5ba88c; border-color: #5ba88c; }
+
+  .qi-num {
+    font-size: 15px; font-weight: 700; color: #fff;
+    width: 18px; text-align: center;
+  }
+
+  /* CARRITO */
+  .carrito-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #25D366;
+    padding: 16px 20px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    z-index: 100;
+  }
+  .carrito-bar.show { display: flex; }
+
+  .carrito-left { display: flex; align-items: center; gap: 12px; }
+
+  .carrito-count {
+    background: rgba(0,0,0,0.2);
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: #fff;
+  }
+
+  .carrito-text { font-weight: 600; font-size: 16px; color: #fff; }
+  .carrito-items-text { font-size: 13px; color: rgba(255,255,255,0.8); }
+
+  .carrito-wa { display: flex; align-items: center; gap: 6px; }
+  .carrito-wa svg { width: 20px; height: 20px; fill: #fff; }
+  .carrito-wa span { font-weight: 700; font-size: 15px; color: #fff; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85); z-index: 200;
+    align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+
+  .modal {
+    background: #141414;
+    border-radius: 20px 20px 0 0;
+    width: 100%; max-width: 520px;
+    max-height: 85vh; overflow-y: auto;
+    padding: 24px 20px 32px;
+  }
+
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .modal-title { font-size: 20px; font-weight: 700; color: #fff; }
+
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid #333; background: transparent;
+    color: #888; font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .resumen-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid #1e1e1e;
+  }
+
+  .resumen-item-left { display: flex; align-items: center; gap: 10px; }
+
+  .resumen-qty {
+    background: #1e3a2f; color: #5ba88c;
+    font-weight: 700; font-size: 13px;
+    padding: 3px 8px; border-radius: 6px;
+  }
+
+  .resumen-name { font-size: 14px; color: #ddd; }
+
+  .resumen-divider { height: 1px; background: #222; margin: 16px 0; }
+
+  .modal .field { margin-bottom: 14px; }
+
+  .modal label {
+    display: block; font-size: 13px; font-weight: 600;
+    color: #888; margin-bottom: 6px;
+  }
+
+  .modal input, .modal textarea {
+    width: 100%; padding: 12px 14px;
+    background: #0a0a0a; border: 1px solid #2a2a2a;
+    border-radius: 10px; color: #fff; font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .modal textarea { resize: none; height: 60px; }
+  .modal input:focus, .modal textarea:focus { outline: none; border-color: #5ba88c; }
+  .modal input::placeholder, .modal textarea::placeholder { color: #444; }
+
+  .btn-send {
+    width: 100%; padding: 16px;
+    background: #25D366; color: #fff; border: none;
+    border-radius: 12px; font-size: 16px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 8px;
+  }
+
+  .btn-send svg { width: 20px; height: 20px; fill: currentColor; }
+
+  .tipo-pedido {
+    display: flex; gap: 8px; margin-bottom: 14px;
+  }
+
+  .tipo-btn {
+    flex: 1; padding: 10px; border-radius: 10px;
+    border: 1.5px solid #2a2a2a; background: transparent;
+    color: #888; font-size: 14px; font-weight: 500;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    text-align: center; transition: all 0.2s;
+  }
+
+  .tipo-btn.active {
+    border-color: #5ba88c; background: #1e3a2f; color: #5ba88c; font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <!-- IMPORTANTE: Cambia esta URL por la del logo cuando lo subas a tu repo en GitHub -->
+  <!-- Ejemplo: https://raw.githubusercontent.com/ozcarprez/menu-majo/main/logo_majo.png -->
+  <img class="hero-logo-img" src="logo_majo.png" alt="Restaurante Majo">
+  <p>Menú Desayunos</p>
+  <div class="direccion">
+    Calle Alejandro Humboldt #1706-1, Garita de Otay, Tijuana B.C.<br>
+    Tel. (664) 624-3200
+  </div>
+</div>
+
+<div class="categorias" id="categorias"></div>
+<div class="menu-content" id="menuContent"></div>
+
+<!-- CARRITO -->
+<div class="carrito-bar" id="carritoBar" onclick="abrirResumen()">
+  <div class="carrito-left">
+    <div class="carrito-count" id="carritoCount">0</div>
+    <div>
+      <div class="carrito-text">Ver pedido</div>
+      <div class="carrito-items-text" id="carritoItemsText"></div>
+    </div>
+  </div>
+  <div class="carrito-wa">
+    <span>Enviar</span>
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Tu Pedido</span>
+      <button class="modal-close" onclick="cerrarResumen()">✕</button>
+    </div>
+    <div id="resumenItems"></div>
+    <div class="resumen-divider"></div>
+
+    <div class="tipo-pedido">
+      <button class="tipo-btn active" onclick="setTipo(this, 'comer aqui')">🍽️ Comer aquí</button>
+      <button class="tipo-btn" onclick="setTipo(this, 'para llevar')">📦 Para llevar</button>
+    </div>
+
+    <div class="field">
+      <label>Tu nombre</label>
+      <input type="text" id="nombre" placeholder="Ej: Juan">
+    </div>
+    <div class="field">
+      <label>Teléfono</label>
+      <input type="tel" id="telefono" placeholder="Ej: 664 123 4567">
+    </div>
+    <div class="field">
+      <label>Notas <span style="color:#555">(opcional)</span></label>
+      <textarea id="notas" placeholder="Sin cebolla, extra salsa, alergias..."></textarea>
+    </div>
+
+    <button class="btn-send" onclick="enviarWhatsApp()">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Enviar pedido por WhatsApp
+    </button>
+  </div>
+</div>
+
+<script>
+  // =============================================
+  // CONFIGURACIÓN
+  // =============================================
+
+  const NUMERO_WHATSAPP = '5216646243200';
+
+  let tipoPedido = 'comer aqui';
+
+  const MENU = [
+    {
+      categoria: 'Huevos',
+      emoji: '🍳',
+      platillos: [
+        { nombre: 'Desayuno Especial', desc: 'Incluye guarnición del día' },
+        { nombre: 'Huevos con Jamón, Tocino, Chorizo o a la Mexicana', desc: '' },
+        { nombre: 'Huevos Tijuana', desc: '' },
+        { nombre: 'Huevos Don Luis', desc: '2 pzas de tortilla, jamón, queso, huevo al gusto bañados en salsa de chicharrón' },
+        { nombre: 'Corundas', desc: 'Dos huevos montados sobre tostadas untadas con frijol refrito, queso fresco y rebanadas de aguacate' },
+        { nombre: 'Tarascos', desc: 'Dos huevos montados en tortilla y jamón, bañados en salsa verde' },
+        { nombre: 'Rancheros', desc: 'Dos huevos encima de tortilla de maíz con salsa ranchera' },
+        { nombre: 'Al Albañil', desc: 'Huevo revuelto, cilantro, tomatillo, cebolla y chile chipotle' },
+        { nombre: 'Divorciados', desc: 'Dos tortillas con dos huevos, una salsa roja, otra salsa verde' },
+        { nombre: 'Huevo con Nopales y Chorizo', desc: '' },
+        { nombre: 'Motuleños', desc: 'Tortilla con frijol, encima dos huevos con jamón y salsa ranchera' },
+        { nombre: 'Victors', desc: 'Dos tortillas, jamón y queso encima con dos huevos bañados en salsa' },
+        { nombre: 'Huevos del Campo', desc: 'Tortilla, 2 piezas de huevo al gusto con cebolla y cilantro' },
+        { nombre: 'Torta de Huevo MAJO', desc: 'Torta de huevo en salsa roja o verde con nopales' },
+        { nombre: 'Torta de Huevo con Espinacas', desc: '' },
+        { nombre: 'Torta de Huevo Española', desc: 'Torta de huevo con chorizo, espinacas, papas, cebolla y champiñones' },
+      ]
+    },
+    {
+      categoria: 'Hot Cakes',
+      emoji: '🥞',
+      platillos: [
+        { nombre: 'Hot Cakes con Huevo', desc: '' },
+        { nombre: 'Hot Cakes con Platano y Lechera', desc: '' },
+        { nombre: 'Hot Cakes con Platano y Nutella', desc: '' },
+        { nombre: 'Hot Cakes con Chispas de Chocolate', desc: '' },
+        { nombre: 'Hot Cakes Chocolate Abuelita', desc: '' },
+        { nombre: 'Hot Cakes con Tocino o Salchicha', desc: '' },
+        { nombre: 'Hot Cakes con Fresa', desc: '' },
+        { nombre: 'Hot Cakes con Plátano', desc: '' },
+        { nombre: 'Hot Cakes Rellenos de Queso Cottage', desc: 'Con fruta de temporada' },
+        { nombre: 'Crepa con Huevo', desc: '' },
+        { nombre: 'Grand Slam', desc: '2 piezas de hot cakes, dos huevos, dos piezas de tocino y dos piezas de salchicha y jamón' },
+        { nombre: 'Pan Francés con Plátano o Fresa', desc: 'Flameado con una bola de nieve' },
+        { nombre: "Pan Francés S'more", desc: 'Con fresas, chocolate y bombón quemado' },
+        { nombre: 'Gran Slam Pan Francés', desc: '' },
+      ]
+    },
+    {
+      categoria: 'Omelettes',
+      emoji: '🥚',
+      platillos: [
+        { nombre: 'Omelett de Machaca', desc: 'Bañado en salsa roja' },
+        { nombre: 'Omelett Campesino', desc: 'Aguacate, jamón, cilantro y cebolla adentro' },
+        { nombre: 'Omelett Hacienda', desc: 'Jamón, queso, cebolla y chile bañado en crema chipotle' },
+        { nombre: 'Omelett Vegetariano', desc: 'Omelett de claras relleno de verduras con salsa ranch' },
+        { nombre: 'Omelett Rajas Poblanas', desc: 'Relleno de rajas en crema con elote y cebolla' },
+        { nombre: 'Omelett Champiñones', desc: '' },
+        { nombre: 'Omelett Aguacate', desc: 'Omelett relleno de aguacate bañado en salsa de queso' },
+        { nombre: 'Omelett Mojo', desc: 'De queso bañado en salsa de mole' },
+        { nombre: 'Omelett Texano', desc: 'Relleno de queso, arrachera y tomate, salsa a escoger' },
+        { nombre: 'Omelett María', desc: 'Jamón, queso, cebolla y ejote saltado en rajas poblanas' },
+        { nombre: 'Omelett Cucaracha', desc: 'Chicharrón en salsa roja con trocitos de tortilla dorada' },
+        { nombre: 'Omelett Divorciado', desc: 'De queso con cebolla y cilantro bañado en salsa roja y verde' },
+        { nombre: 'Omelett de Chilaquiles', desc: 'Salsa roja y verde' },
+        { nombre: 'Omelette de Salsa Suiza', desc: 'Omelett bañado en salsa de crema de tomatillo' },
+        { nombre: 'Omelett de Nopales', desc: '' },
+        { nombre: 'Omelett de Espinacas', desc: '' },
+        { nombre: 'Omelett Queso Jamón y Tocino', desc: '' },
+        { nombre: 'Omelett de la Casa', desc: 'Queso fresco, rajas, champiñones, cebolla bañado en crema chipotle' },
+        { nombre: 'Omelett Maximo', desc: 'Blanchicha, jamón, tocino, cebolla, chile morrón y champiñones' },
+        { nombre: 'Omelett Camarones en Crema Chipotle', desc: '' },
+      ]
+    },
+    {
+      categoria: 'Chilaquiles',
+      emoji: '🫔',
+      platillos: [
+        { nombre: 'Chilaquiles Rojos o Verdes', desc: '' },
+        { nombre: 'Chilaquiles c/Pollo, Rojos, Verdes o Mole', desc: '' },
+        { nombre: 'Chilaquiles c/Huevo Rojos, Verdes o Mole', desc: '' },
+        { nombre: 'Chilaquiles c/Carne Asada Rojos, Verdes o Mole', desc: '' },
+        { nombre: 'Chilaquiles c/Pollo Suizos o Crema Chipotle', desc: '' },
+        { nombre: 'Chilaquiles c/Huevo Suizos o Crema Chipotle', desc: '' },
+        { nombre: 'Chilaquiles c/Carne Asada Suizos o Crema Chipotle', desc: '' },
+        { nombre: 'Chilaquiles c/Machaca Ranchera', desc: '' },
+        { nombre: 'Chilaquiles c/Camarón, salsa y queso al gusto', desc: '' },
+        { nombre: 'Tour Chilaquiles', desc: '3 porciones de chilaquiles sencillos: 1 con mole, 1 en crema chipotle y 1 crema suiza' },
+        { nombre: 'Chilaquiles Don Luis', desc: 'Bañados en una deliciosa salsa de chicharrón con pollo o carne' },
+      ]
+    },
+    {
+      categoria: 'Carnes',
+      emoji: '🥩',
+      platillos: [
+        { nombre: 'Bistec Chipotle c/Huevo', desc: '' },
+        { nombre: 'Bistec Albañil c/Huevo', desc: '' },
+        { nombre: 'Carne Arrachera c/Huevo', desc: '' },
+        { nombre: 'Carne Asada c/Huevo', desc: '' },
+        { nombre: 'Machaca con Huevos', desc: '' },
+        { nombre: 'Machaca Ranchera', desc: '' },
+        { nombre: 'Machaca en Caldillo', desc: '' },
+        { nombre: 'Menudo Rojo o Blanco', desc: 'Sábado y Domingo' },
+      ]
+    },
+    {
+      categoria: 'Aves',
+      emoji: '🍗',
+      platillos: [
+        { nombre: 'Pechuga Xochitl c/Huevo al gusto', desc: '' },
+        { nombre: 'Pechuga Ranchera c/Huevo al gusto', desc: '' },
+        { nombre: 'Pechuga Albañil c/Huevo al gusto', desc: '' },
+        { nombre: 'Pechuga Rajas Poblanas c/Huevo al gusto', desc: '' },
+        { nombre: 'Pechuga a la Plancha', desc: 'Con ensalada de nopal y huevo al gusto' },
+        { nombre: 'Fajitas de Pollo c/Huevo', desc: '' },
+      ]
+    },
+    {
+      categoria: 'Antojitos',
+      emoji: '🌮',
+      platillos: [
+        { nombre: 'Mollette con Salsa Ranchera', desc: '' },
+        { nombre: 'Molletes con Jamón o Tocino', desc: '' },
+        { nombre: 'Enfrijoladas', desc: '' },
+        { nombre: 'Quesadillas Sencillas de Harina', desc: '' },
+        { nombre: 'Quesadillas de Harina con Carne', desc: '2 piezas, maíz 4 piezas' },
+        { nombre: 'Enchiladas Rojas, Verdes, Mole de Queso o Pollo', desc: '' },
+        { nombre: 'Enchiladas Suizas', desc: 'Enchiladas de pollo en crema de tomate gratinadas' },
+        { nombre: 'Carne Asada c/Huevo al Gusto', desc: 'Con 2 enchiladas: verde, rojas, pollo, queso' },
+      ]
+    },
+    {
+      categoria: 'Ensaladas y Avena',
+      emoji: '🥗',
+      platillos: [
+        { nombre: 'Ensalada de Frutas Chica', desc: '' },
+        { nombre: 'Ensalada de Fruta Grande', desc: '' },
+        { nombre: 'Avena Chica con Pan Tostado y Plátano', desc: '' },
+        { nombre: 'Manzana o Papaya', desc: '' },
+        { nombre: 'Avena Grande con Pan Tostado y Plátano', desc: '' },
+        { nombre: 'Manzana o Papaya Grande', desc: '' },
+        { nombre: 'Ensalada de Nopal', desc: '' },
+      ]
+    },
+    {
+      categoria: 'Bebidas',
+      emoji: '☕',
+      platillos: [
+        { nombre: 'Café', desc: '' },
+        { nombre: 'Café de Olla', desc: '' },
+        { nombre: 'Vaso de Leche', desc: '' },
+        { nombre: 'Licuado de Fresa, Plátano o Papaya', desc: '' },
+        { nombre: 'Malteada de Fresa, Chocolate o Vainilla', desc: '' },
+        { nombre: 'Té Caliente', desc: '' },
+        { nombre: 'Chocomilk', desc: '' },
+        { nombre: 'Chocolate Caliente', desc: '' },
+        { nombre: 'Jugo de Naranja', desc: '' },
+        { nombre: 'Jugo de Toronja', desc: '' },
+        { nombre: 'Jugo de Zanahoria', desc: '' },
+        { nombre: 'Jugo de Naranja con Zanahoria', desc: '' },
+        { nombre: 'Jugo de Naranja con Nopal', desc: '' },
+        { nombre: 'Jugo Verde', desc: '' },
+        { nombre: 'Taza de Avena', desc: '' },
+        { nombre: 'Limonada Mineral', desc: '' },
+        { nombre: 'Naranjada Mineral', desc: '' },
+        { nombre: 'Té Helado', desc: '' },
+        { nombre: 'Agua del Día', desc: '' },
+        { nombre: 'Limonada', desc: '' },
+        { nombre: 'Naranjada', desc: '' },
+        { nombre: 'Jarra de Agua', desc: '' },
+        { nombre: 'Jarra de Limonada Mineral', desc: '' },
+        { nombre: 'Sodas', desc: '' },
+      ]
+    },
+    {
+      categoria: 'Postres',
+      emoji: '🍰',
+      platillos: [
+        { nombre: 'Pastel de Queso', desc: '' },
+        { nombre: 'Jericaya', desc: '' },
+        { nombre: 'Flan de la Casa', desc: '' },
+        { nombre: 'Crepas', desc: '' },
+      ]
+    },
+    {
+      categoria: 'Combinaciones',
+      emoji: '⭐',
+      subtitle: 'Chilaquiles a elegir (rojos, suizos, chipotle, mole o San Luis) — Incluyen café',
+      platillos: [
+        { nombre: 'Combinación 1: con Pancakes 3pz', desc: '' },
+        { nombre: 'Combinación 2: con Pan Francés', desc: '' },
+        { nombre: 'Combinación 3: con Crepa', desc: 'Nutella, crema con mermelada' },
+      ]
+    },
+    {
+      categoria: 'Niños',
+      emoji: '👧',
+      subtitle: 'Todos incluyen bebida: Leche, Jugo de Naranja o Chocomilk',
+      platillos: [
+        { nombre: 'Carita Feliz de Hot Cake con Huevo, Tocino, Jamón o Salchicha', desc: '' },
+        { nombre: '2 Piezas Hot Cakes con Huevo, Tocino, Jamón o Salchicha', desc: '' },
+        { nombre: '2 Quesadillas de Maíz con Huevo, Frijoles y Papas', desc: '' },
+        { nombre: '1 Quesadilla de Harina con Huevo, Frijoles y Papas', desc: '' },
+        { nombre: '1 Pan Francés con Huevo, Tocino, Jamón o Salchicha', desc: '' },
+      ]
+    }
+  ];
+
+  // =============================================
+  // LÓGICA
+  // =============================================
+
+  const carrito = {};
+
+  function renderMenu() {
+    const categoriasDiv = document.getElementById('categorias');
+    const contentDiv = document.getElementById('menuContent');
+
+    categoriasDiv.innerHTML = `<button class="cat-btn active" onclick="filtrar('todo')">Todo</button>`;
+
+    MENU.forEach((cat, i) => {
+      categoriasDiv.innerHTML += `<button class="cat-btn" onclick="filtrar('${i}')">${cat.emoji} ${cat.categoria}</button>`;
+
+      let html = `<div class="cat-section active" data-cat="${i}">`;
+      html += `<div class="cat-title">${cat.emoji} ${cat.categoria}</div>`;
+      if (cat.subtitle) {
+        html += `<div class="cat-subtitle">${cat.subtitle}</div>`;
+      }
+
+      cat.platillos.forEach((p, j) => {
+        const id = `${i}-${j}`;
+        html += `
+          <div class="platillo">
+            <div class="platillo-info">
+              <div class="platillo-name">${p.nombre}</div>
+              ${p.desc ? `<div class="platillo-desc">${p.desc}</div>` : ''}
+            </div>
+            <div class="platillo-right">
+              <button class="add-btn" id="add-${id}" onclick="agregar('${p.nombre.replace(/'/g, "\\'")}', '${id}')">+</button>
+              <div class="cantidad-inline" id="qi-${id}">
+                <button class="qi-btn" onclick="quitarUno('${p.nombre.replace(/'/g, "\\'")}', '${id}')">−</button>
+                <span class="qi-num" id="qn-${id}">0</span>
+                <button class="qi-btn" onclick="agregar('${p.nombre.replace(/'/g, "\\'")}', '${id}')">+</button>
+              </div>
+            </div>
+          </div>`;
+      });
+
+      html += `</div>`;
+      contentDiv.innerHTML += html;
+    });
+  }
+
+  function filtrar(cat) {
+    document.querySelectorAll('.cat-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', (cat === 'todo' && i === 0) || cat === String(i - 1));
+    });
+    document.querySelectorAll('.cat-section').forEach(sec => {
+      if (cat === 'todo') sec.classList.add('active');
+      else sec.classList.toggle('active', sec.dataset.cat === cat);
+    });
+  }
+
+  function agregar(nombre, id) {
+    if (!carrito[nombre]) carrito[nombre] = { cantidad: 0 };
+    carrito[nombre].cantidad++;
+    document.getElementById(`add-${id}`).style.display = 'none';
+    document.getElementById(`qi-${id}`).classList.add('show');
+    document.getElementById(`qn-${id}`).textContent = carrito[nombre].cantidad;
+    actualizarCarrito();
+  }
+
+  function quitarUno(nombre, id) {
+    if (!carrito[nombre]) return;
+    carrito[nombre].cantidad--;
+    if (carrito[nombre].cantidad <= 0) {
+      delete carrito[nombre];
+      document.getElementById(`add-${id}`).style.display = 'flex';
+      document.getElementById(`qi-${id}`).classList.remove('show');
+    } else {
+      document.getElementById(`qn-${id}`).textContent = carrito[nombre].cantidad;
+    }
+    actualizarCarrito();
+  }
+
+  function actualizarCarrito() {
+    let totalItems = 0;
+    for (const key in carrito) totalItems += carrito[key].cantidad;
+
+    const bar = document.getElementById('carritoBar');
+    bar.classList.toggle('show', totalItems > 0);
+    document.getElementById('carritoCount').textContent = totalItems;
+    document.getElementById('carritoItemsText').textContent = `${totalItems} producto${totalItems !== 1 ? 's' : ''}`;
+  }
+
+  function setTipo(btn, tipo) {
+    tipoPedido = tipo;
+    document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function abrirResumen() {
+    const itemsDiv = document.getElementById('resumenItems');
+    let html = '';
+    for (const nombre in carrito) {
+      html += `
+        <div class="resumen-item">
+          <div class="resumen-item-left">
+            <span class="resumen-qty">${carrito[nombre].cantidad}x</span>
+            <span class="resumen-name">${nombre}</span>
+          </div>
+        </div>`;
+    }
+    itemsDiv.innerHTML = html;
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+
+  function cerrarResumen() {
+    document.getElementById('modalOverlay').classList.remove('show');
+  }
+
+  function enviarWhatsApp() {
+    const nombre = document.getElementById('nombre').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const notas = document.getElementById('notas').value.trim();
+
+    if (!nombre) { alert('Escribe tu nombre'); return; }
+    if (!telefono) { alert('Escribe tu teléfono'); return; }
+
+    let lista = '';
+    for (const key in carrito) {
+      lista += `   • ${carrito[key].cantidad}x ${key}\n`;
+    }
+
+    let mensaje = `🍽️ *Pedido - Restaurante Majo*\n\n`;
+    mensaje += `📋 *Orden:*\n${lista}\n`;
+    mensaje += `📍 *Tipo:* ${tipoPedido === 'comer aqui' ? 'Comer en restaurante' : 'Para llevar'}\n\n`;
+    mensaje += `👤 *Nombre:* ${nombre}\n`;
+    mensaje += `📱 *Tel:* ${telefono}\n`;
+    if (notas) mensaje += `📝 *Notas:* ${notas}\n`;
+    mensaje += `\n¡Gracias!`;
+
+    const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
+    cerrarResumen();
+  }
+
+  renderMenu();
+</script>
+
+</body>
+</html>
