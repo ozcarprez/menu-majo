@@ -3,30 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#173f35">
+<meta name="theme-color" content="#1a2236">
 <meta name="description" content="Consulta el menú de Restaurante Majo: desayunos, especialidades, bebidas y postres. Encuéntranos en Otay y Majo Express.">
 <title>La carta · Restaurante Majo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:light;--ink:#182e27;--green:#173f35;--paper:#faf9f5;--muted:#53655c;--line:#dce2da;--accent:#e5bc6a}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.55 'DM Sans',sans-serif}button,a,select{font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #b68020;outline-offset:4px}a{color:inherit}button{min-height:44px} .skip{position:absolute;top:-80px}.skip:focus{top:0;background:white;z-index:100;padding:12px}
+:root{color-scheme:light;--ink:#1a2236;--green:#1a2236;--paper:#FAF6EE;--muted:#4d5668;--line:#ded8cb;--accent:#E0A94E}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.55 'Jost',sans-serif}button,a,select{font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #b68020;outline-offset:4px}a{color:inherit}button{min-height:44px} .skip{position:absolute;top:-80px}.skip:focus{top:0;background:white;z-index:100;padding:12px}
 .masthead{background:var(--green);color:white;padding:25px max(24px,calc((100vw - 1160px)/2));display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:4px solid var(--accent)}
 .logo{width:165px;height:auto;display:block}.brand-note{font-size:.875rem;letter-spacing:.12em;text-transform:uppercase;color:#eee5ce}.outline{border:1px solid #ffffff70;background:transparent;color:white;padding:10px 18px;border-radius:8px}
-.intro{max-width:1208px;padding:36px 24px 28px;margin:auto;display:flex;align-items:end;justify-content:space-between;gap:24px}.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:.875rem;font-weight:700;color:var(--muted);margin:0 0 8px}h1,h2{font-family:'Playfair Display',Georgia,serif;line-height:1.15}h1{font-size:clamp(2.7rem,6vw,4.4rem);margin:0;font-weight:600}.intro p:last-child{margin:12px 0 0;color:var(--muted)}.intro-actions{display:flex;flex-wrap:wrap;gap:8px}.btn{border:1px solid var(--line);border-radius:8px;background:white;color:var(--green);padding:11px 16px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn.primary{background:var(--green);color:white;border-color:var(--green)}
+.intro{max-width:1208px;padding:36px 24px 28px;margin:auto;display:flex;align-items:end;justify-content:space-between;gap:24px}.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:.875rem;font-weight:700;color:var(--muted);margin:0 0 8px}h1,h2{font-family:'Cormorant Garamond',Georgia,serif;line-height:1.15}h1{font-size:clamp(2.7rem,6vw,4.4rem);margin:0;font-weight:600}.intro p:last-child{margin:12px 0 0;color:var(--muted)}.intro-actions{display:flex;flex-wrap:wrap;gap:8px}.btn{border:1px solid var(--line);border-radius:8px;background:white;color:var(--green);padding:11px 16px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn.primary{background:var(--green);color:white;border-color:var(--green)}
 .layout{max-width:1208px;margin:auto;padding:0 24px 56px;display:grid;grid-template-columns:210px minmax(0,1fr);gap:42px}.navigation{position:sticky;top:20px;align-self:start}.nav-title{font-size:.875rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted);margin:0 0 12px}.categories{display:flex;flex-direction:column;gap:4px}.cat{border:0;background:transparent;text-align:left;border-radius:7px;padding:10px 14px;color:var(--muted);display:flex;justify-content:space-between;gap:12px}.cat[aria-pressed="true"]{color:white;background:var(--green)}.cat span{font-size:.875rem;opacity:.8}.section{margin-bottom:32px;scroll-margin-top:20px}.section[hidden]{display:none}.section-head{border-bottom:2px solid var(--green);padding:0 0 16px;display:flex;align-items:baseline;justify-content:space-between;gap:16px}.section h2{font-size:2rem;margin:0}.section-index{font-size:.875rem;letter-spacing:.12em;color:var(--muted)}.subtitle{color:var(--green);background:#eaf0e8;padding:12px 16px;border-radius:6px;font-size:1rem}.dishes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:30px}.dish{padding:20px 0;border-bottom:1px solid var(--line)}.dish h3{font-size:1.0625rem;line-height:1.4;font-weight:700;margin:0}.dish p{font-size:1rem;line-height:1.55;color:var(--muted);margin:6px 0 0}
 .locations{background:#edf0e9;border-top:1px solid var(--line);padding:34px 24px}.locations-inner{max-width:1160px;margin:auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}.locations h2{font-size:1.7rem;margin:0}.locations h3{font-size:1rem;margin:0 0 6px}.locations p{font-size:.9375rem;margin:0;color:var(--muted)}footer{padding:18px 24px;text-align:center;color:var(--muted);font-size:.875rem}
 dialog{border:1px solid var(--line);border-radius:16px;max-width:700px;width:calc(100% - 32px);padding:24px;background:var(--paper);color:var(--ink)}dialog::backdrop{background:#102820a8}.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.dialog-head h2{font-size:1.75rem;margin:0}.close{border:1px solid var(--line);border-radius:50%;background:white;width:44px;flex-shrink:0}.dialog-copy{color:var(--muted)}label{display:block;margin-bottom:8px;font-weight:600}select{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink)}.export-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}.social-card img{display:block;width:100%;border:1px solid var(--line);border-radius:8px}.social-card .btn{margin-top:8px;width:100%;font-size:.875rem}.status{min-height:1.5em;font-size:.9375rem;color:var(--muted)}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--green);color:white;padding:12px 20px;border-radius:10px;z-index:100;max-width:90vw;box-shadow:0 6px 30px #0002}#toast:empty{display:none}
 @media(max-width:760px){.masthead{padding:18px 20px}.logo{width:130px}.brand-note{display:none}.intro{padding:26px 20px 24px;display:block}.intro-actions{margin-top:20px}.layout{display:block;padding:0 20px 30px}.navigation{position:sticky;top:0;background:var(--paper);z-index:10;padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:24px}.nav-title{display:none}.categories{flex-direction:row;overflow-x:auto;padding-bottom:5px}.cat{white-space:nowrap;border:1px solid var(--line);padding:8px 14px}.cat span{display:none}.dishes{grid-template-columns:1fr}.section h2{font-size:1.8rem}.dish{padding:17px 0}.locations-inner{grid-template-columns:1fr}.section{scroll-margin-top:88px}.cards{grid-template-columns:1fr}.intro-actions .btn{flex-grow:1}}
 @media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 @media print{.masthead{background:white;color:black}.navigation,.intro-actions,.outline,dialog,#toast{display:none!important}.layout{display:block}.section[hidden]{display:block}.dish{break-inside:avoid}.locations-inner{grid-template-columns:1fr 1fr 1fr}body{background:white}}
+
+/* Brand shared with the restaurant website; reading controls remain prominent. */
+.masthead{background:#1a2236}.brand-note{font-size:.875rem;letter-spacing:.08em;color:#C5E8E2}.home-link{text-decoration:none}.home-link:hover{text-decoration:underline}
+h1 em{font-weight:600;color:#956326}h1{font-size:clamp(2.8rem,6vw,4.2rem)}.intro{padding-bottom:18px}.eyebrow{color:#2B7A6A}
+.browse{max-width:1208px;margin:auto;padding:0 24px 12px}.browse label{font-size:1rem}.search-row{display:flex;gap:10px;max-width:650px}.search-row input{width:100%;min-width:0;font:inherit;font-size:1.0625rem;border:1px solid #bfc3bd;background:#fff;padding:13px 16px;border-radius:5px;color:var(--ink)}.search-row input:focus-visible{outline:3px solid #2B7A6A;outline-offset:2px}
+[hidden]{display:none!important}.browse .status:empty{display:none}.layout{display:block}.navigation{position:static;margin-bottom:32px;padding:0 0 24px;border-bottom:1px solid var(--line)}.nav-title{display:block}.categories{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;overflow:visible}.cat{background:#F6EFE0;border:1px solid #ded8cb;color:var(--ink);font-size:1rem;border-radius:5px;white-space:normal;align-items:center}.cat:hover{border-color:#2B7A6A}.cat[aria-pressed="true"]{background:#2B7A6A;border-color:#2B7A6A}.cat span{display:block;color:inherit}.section-head{border-bottom:2px solid #2B7A6A}.section h2{font-size:2.4rem}.section-index{color:#956326}.subtitle{background:#e5efea;color:#245f53}.dish h3{font-size:1.125rem}.dish p{color:#4d5668}.btn.primary{background:#2B7A6A;border-color:#2B7A6A}.locations{background:#F6EFE0}footer{background:#1a2236;color:#C5E8E2}.section{scroll-margin-top:20px}
+@media(max-width:760px){.brand-note{display:none}.browse{padding:0 20px 12px}.navigation{position:static;padding:0 0 20px;margin-bottom:24px}.categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.cat{font-size:.9375rem;padding:10px;justify-content:center;text-align:center;min-height:48px}.cat span{display:none}.intro-actions{margin-top:14px}.intro{padding-top:22px}.section h2{font-size:2rem}.outline{font-size:.875rem;padding:9px 12px}.masthead{gap:12px}}
+@media(max-width:380px){.categories{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media print{.browse{display:none}.dish[hidden]{display:block!important}.section[hidden]{display:block!important}}
 </style>
 </head>
 <body>
 <a class="skip" href="#menu">Ir al menú</a>
-<header class="masthead"><img class="logo" src="logo_majo.png" alt="Restaurante Majo"><span class="brand-note">Otay · Majo Express</span><button class="outline" id="share">Compartir menú ↗</button></header>
-<div class="intro"><div><p class="eyebrow">Restaurante Majo</p><h1>La carta</h1><p>Desayunos, especialidades y algo dulce.</p></div><div class="intro-actions"><button class="btn" id="copy">Copiar enlace</button><button class="btn primary" id="openExport">Guardar para redes ↓</button></div></div>
-<div class="layout"><aside class="navigation"><p class="nav-title">Explora el menú</p><nav class="categories" id="categories" aria-label="Categorías del menú"></nav></aside><main id="menu" tabindex="-1"></main></div>
+<header class="masthead"><img class="logo" src="logo_majo.png" alt="Restaurante Majo"><a class="brand-note home-link" href="https://restaurante-majo.vercel.app/">Conoce el restaurante ↗</a><button class="outline" id="share">Compartir menú ↗</button></header>
+<div class="intro"><div><p class="eyebrow">Restaurante Majo</p><h1>Nuestro <em>menú</em></h1><p>Desayunos, especialidades y algo dulce.</p></div><div class="intro-actions"><button class="btn" id="copy">Copiar enlace</button><button class="btn primary" id="openExport">Guardar para redes ↓</button></div></div>
+<div class="browse"><label for="dishSearch">¿Qué se te antoja?</label><div class="search-row"><input id="dishSearch" type="search" placeholder="Busca chilaquiles, pollo, café…" autocomplete="off"><button class="btn" id="clearSearch" hidden>Limpiar</button></div><p id="searchStatus" class="status" role="status"></p></div><div class="layout"><aside class="navigation"><p class="nav-title">Elige una categoría</p><nav class="categories" id="categories" aria-label="Categorías del menú"></nav></aside><main id="menu" tabindex="-1"></main></div>
 <section class="locations" aria-labelledby="locations-title"><div class="locations-inner"><h2 id="locations-title">Encuéntranos</h2><div><h3>Majo Otay</h3><p>Blvd Industrial 2do Eje esq. 7 Sur</p></div><div><h3>Majo Express</h3><p>Alejandro Humboldt #1706-1</p></div></div></section>
 <footer>Restaurante Majo · Menú informativo</footer>
 <dialog id="exportDialog" aria-labelledby="exportTitle"><div class="dialog-head"><h2 id="exportTitle">Tu menú, listo para compartir</h2><button class="close" id="closeExport" aria-label="Cerrar">✕</button></div><p class="dialog-copy">Guarda imágenes verticales para tus posts o envíalas por Messenger, Instagram y WhatsApp. Cada categoría se divide en páginas para mantener el texto legible.</p><label for="exportCategory">Categoría</label><select id="exportCategory"></select><div class="export-actions"><button class="btn primary" id="generate">Preparar imágenes</button></div><p class="status" id="exportStatus" role="status"></p><div class="cards" id="cards"></div></dialog>
@@ -238,10 +247,11 @@ dialog{border:1px solid var(--line);border-radius:16px;max-width:700px;width:cal
 const $=id=>document.getElementById(id);
 const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-$/,'');
 let current='todo',toastTimer,exportUrls=[];
+const normalize=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function notice(text){$('toast').textContent=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').textContent='',5000)}
 function textElement(tag,text,className){const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;return el}
 function selectCategory(id,update=true){
- current=id;document.querySelectorAll('.cat').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===id)));
+ current=id;$('dishSearch').value='';$('clearSearch').hidden=true;$('searchStatus').textContent='';document.querySelectorAll('.dish').forEach(d=>d.hidden=false);document.querySelectorAll('.cat').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===id)));
  document.querySelectorAll('.section').forEach(s=>s.hidden=id!=='todo'&&s.id!==id);
  if(update){const u=new URL(location.href);u.hash=id==='todo'?'':id;history.replaceState(null,'',u);$('menu').scrollIntoView({block:'start'})}
  $('exportCategory').value=id==='todo'?'0':String(MENU.findIndex(c=>slug(c.categoria)===id));
@@ -271,8 +281,8 @@ function clearCards(){exportUrls.forEach(URL.revokeObjectURL);exportUrls=[];$('c
 $('exportCategory').onchange=()=>{clearCards();$('exportStatus').textContent=''};
 function wrap(ctx,text,width){const result=[];let line='';for(const word of text.split(/\s+/)){const next=line?line+' '+word:word;if(ctx.measureText(next).width>width&&line){result.push(line);line=word}else line=next}if(line)result.push(line);return result}
 function layoutCategory(ctx,c){
- const rows=c.platillos.map(p=>{ctx.font='700 32px "DM Sans", sans-serif';const names=wrap(ctx,p.nombre,936);ctx.font='400 27px "DM Sans", sans-serif';const desc=p.desc?wrap(ctx,p.desc,936):[];return {names,desc,height:names.length*42+desc.length*36+(desc.length?12:0)+38}});
- ctx.font='400 25px "DM Sans", sans-serif';const subtitle=c.subtitle?wrap(ctx,c.subtitle,936):[];
+ const rows=c.platillos.map(p=>{ctx.font='700 32px "Jost", sans-serif';const names=wrap(ctx,p.nombre,936);ctx.font='400 27px "Jost", sans-serif';const desc=p.desc?wrap(ctx,p.desc,936):[];return {names,desc,height:names.length*42+desc.length*36+(desc.length?12:0)+38}});
+ ctx.font='400 25px "Jost", sans-serif';const subtitle=c.subtitle?wrap(ctx,c.subtitle,936):[];
  const top=300+subtitle.length*34;const pages=[];let page=[],y=top;
  rows.forEach(row=>{if(y+row.height>1190&&page.length){pages.push(page);page=[];y=top}page.push(row);y+=row.height});if(page.length)pages.push(page);return{pages,subtitle,top};
 }
@@ -283,13 +293,13 @@ async function generate(){
  const c=MENU[Number($('exportCategory').value)],canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1350;const ctx=canvas.getContext('2d');
  const {pages,subtitle,top}=layoutCategory(ctx,c);
  for(let index=0;index<pages.length;index++){
- ctx.fillStyle='#faf9f5';ctx.fillRect(0,0,1080,1350);ctx.fillStyle='#173f35';ctx.fillRect(0,0,1080,150);ctx.fillStyle='#e5bc6a';ctx.fillRect(0,150,1080,6);
- ctx.fillStyle='#fff';ctx.font='600 56px "Playfair Display", Georgia';ctx.fillText('Restaurante Majo',72,96);
- ctx.fillStyle='#173f35';ctx.font='600 54px "Playfair Display", Georgia';ctx.fillText(c.categoria,72,240);
- ctx.font='400 25px "DM Sans", sans-serif';subtitle.forEach((line,j)=>ctx.fillText(line,72,280+j*34));
+ ctx.fillStyle='#FAF6EE';ctx.fillRect(0,0,1080,1350);ctx.fillStyle='#1a2236';ctx.fillRect(0,0,1080,150);ctx.fillStyle='#E0A94E';ctx.fillRect(0,150,1080,6);
+ ctx.fillStyle='#fff';ctx.font='600 56px "Cormorant Garamond", Georgia';ctx.fillText('Restaurante Majo',72,96);
+ ctx.fillStyle='#1a2236';ctx.font='600 54px "Cormorant Garamond", Georgia';ctx.fillText(c.categoria,72,240);
+ ctx.font='400 25px "Jost", sans-serif';subtitle.forEach((line,j)=>ctx.fillText(line,72,280+j*34));
  let y=top;
- pages[index].forEach(row=>{ctx.fillStyle='#182e27';ctx.font='700 32px "DM Sans", sans-serif';row.names.forEach(line=>{ctx.fillText(line,72,y+32);y+=42});if(row.desc.length){y+=12;ctx.fillStyle='#53655c';ctx.font='400 27px "DM Sans", sans-serif';row.desc.forEach(line=>{ctx.fillText(line,72,y+27);y+=36})}y+=18;ctx.fillStyle='#dce2da';ctx.fillRect(72,y,936,1);y+=20});
- ctx.fillStyle='#173f35';ctx.fillRect(0,1220,1080,130);ctx.fillStyle='#fff';ctx.font='500 24px "DM Sans", sans-serif';ctx.fillText('Majo Otay · Majo Express',72,1267);ctx.font='400 22px "DM Sans", sans-serif';ctx.fillText('Menú informativo',72,1307);ctx.textAlign='right';ctx.fillText((index+1)+' / '+pages.length,1008,1307);ctx.textAlign='left';
+ pages[index].forEach(row=>{ctx.fillStyle='#1a2236';ctx.font='700 32px "Jost", sans-serif';row.names.forEach(line=>{ctx.fillText(line,72,y+32);y+=42});if(row.desc.length){y+=12;ctx.fillStyle='#4d5668';ctx.font='400 27px "Jost", sans-serif';row.desc.forEach(line=>{ctx.fillText(line,72,y+27);y+=36})}y+=18;ctx.fillStyle='#ded8cb';ctx.fillRect(72,y,936,1);y+=20});
+ ctx.fillStyle='#1a2236';ctx.fillRect(0,1220,1080,130);ctx.fillStyle='#fff';ctx.font='500 24px "Jost", sans-serif';ctx.fillText('Majo Otay · Majo Express',72,1267);ctx.font='400 22px "Jost", sans-serif';ctx.fillText('Menú informativo',72,1307);ctx.textAlign='right';ctx.fillText((index+1)+' / '+pages.length,1008,1307);ctx.textAlign='left';
  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw Error('No image');
  const url=URL.createObjectURL(blob);exportUrls.push(url);const box=document.createElement('div');box.className='social-card';const img=document.createElement('img');img.src=url;img.alt=c.categoria+' · página '+(index+1);box.append(img);
  const filename='majo-'+slug(c.categoria)+'-'+(index+1)+'.png';const a=textElement('a','Guardar imagen '+(index+1),'btn');a.href=url;a.download=filename;box.append(a);
@@ -302,6 +312,21 @@ async function generate(){
 }
 $('generate').onclick=generate;
 window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);selectCategory(MENU.some(c=>slug(c.categoria)===id)?id:'todo',false)});
+
+function applySearch(){
+ const query=normalize($('dishSearch').value.trim());$('clearSearch').hidden=!query;
+ if(!query){selectCategory(current,false);return}
+ document.querySelectorAll('.cat').forEach(b=>b.setAttribute('aria-pressed','false'));
+ let count=0;
+ document.querySelectorAll('.section').forEach(section=>{
+ let visible=0;
+ section.querySelectorAll('.dish').forEach(dish=>{const match=normalize(dish.textContent).includes(query);dish.hidden=!match;if(match)visible++});
+ section.hidden=visible===0;count+=visible;
+ });
+ $('searchStatus').textContent=count?count+' platillo'+(count===1?'':'s')+' encontrado'+(count===1?'':'s'):'No encontramos ese platillo. Prueba con otro nombre o ingrediente.';
+}
+$('dishSearch').addEventListener('input',applySearch);
+$('clearSearch').onclick=()=>{selectCategory('todo',false);$('dishSearch').focus()};
 render();
 </script>
 </body>
