@@ -33,12 +33,11 @@ h1 em{font-weight:600;color:#956326}h1{font-size:clamp(2.8rem,6vw,4.2rem)}.intro
 </head>
 <body>
 <a class="skip" href="#menu">Ir al menú</a>
-<header class="masthead"><img class="logo" src="logo_majo.png" alt="Restaurante Majo"><a class="brand-note home-link" href="https://restaurante-majo.vercel.app/">Conoce el restaurante ↗</a><button class="outline" id="share">Compartir menú ↗</button></header>
-<div class="intro"><div><p class="eyebrow">Restaurante Majo</p><h1>Nuestro <em>menú</em></h1><p>Desayunos, especialidades y algo dulce.</p></div><div class="intro-actions"><button class="btn" id="copy">Copiar enlace</button><button class="btn primary" id="openExport">Guardar para redes ↓</button></div></div>
+<header class="masthead"><img class="logo" src="logo_majo.png" alt="Restaurante Majo"><a class="brand-note home-link" href="https://restaurante-majo.vercel.app/">Conoce el restaurante ↗</a></header>
+<div class="intro"><div><p class="eyebrow">Restaurante Majo</p><h1>Nuestro <em>menú</em></h1><p>Desayunos, especialidades y algo dulce.</p></div><div class="intro-actions"><button class="btn" id="copy">Copiar enlace</button></div></div>
 <div class="browse"><label for="dishSearch">¿Qué se te antoja?</label><div class="search-row"><input id="dishSearch" type="search" placeholder="Busca chilaquiles, pollo, café…" autocomplete="off"><button class="btn" id="clearSearch" hidden>Limpiar</button></div><p id="searchStatus" class="status" role="status"></p></div><div class="layout"><aside class="navigation"><p class="nav-title">Elige una categoría</p><nav class="categories" id="categories" aria-label="Categorías del menú"></nav></aside><main id="menu" tabindex="-1"></main></div>
 <section class="locations" aria-labelledby="locations-title"><div class="locations-inner"><h2 id="locations-title">Encuéntranos</h2><div><h3>Majo Otay</h3><p>Blvd Industrial 2do Eje esq. 7 Sur</p></div><div><h3>Majo Express</h3><p>Alejandro Humboldt #1706-1</p></div></div></section>
 <footer>Restaurante Majo · Menú informativo</footer>
-<dialog id="exportDialog" aria-labelledby="exportTitle"><div class="dialog-head"><h2 id="exportTitle">Tu menú, listo para compartir</h2><button class="close" id="closeExport" aria-label="Cerrar">✕</button></div><p class="dialog-copy">Guarda imágenes verticales para tus posts o envíalas por Messenger, Instagram y WhatsApp. Cada categoría se divide en páginas para mantener el texto legible.</p><label for="exportCategory">Categoría</label><select id="exportCategory"></select><div class="export-actions"><button class="btn primary" id="generate">Preparar imágenes</button></div><p class="status" id="exportStatus" role="status"></p><div class="cards" id="cards"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
   const MENU = [
@@ -246,7 +245,7 @@ h1 em{font-weight:600;color:#956326}h1{font-size:clamp(2.8rem,6vw,4.2rem)}.intro
 
 const $=id=>document.getElementById(id);
 const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-$/,'');
-let current='todo',toastTimer,exportUrls=[];
+let current='todo',toastTimer;
 const normalize=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function notice(text){$('toast').textContent=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').textContent='',5000)}
 function textElement(tag,text,className){const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;return el}
@@ -254,7 +253,6 @@ function selectCategory(id,update=true){
  current=id;$('dishSearch').value='';$('clearSearch').hidden=true;$('searchStatus').textContent='';document.querySelectorAll('.dish').forEach(d=>d.hidden=false);document.querySelectorAll('.cat').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===id)));
  document.querySelectorAll('.section').forEach(s=>s.hidden=id!=='todo'&&s.id!==id);
  if(update){const u=new URL(location.href);u.hash=id==='todo'?'':id;history.replaceState(null,'',u);$('menu').scrollIntoView({block:'start'})}
- $('exportCategory').value=id==='todo'?'0':String(MENU.findIndex(c=>slug(c.categoria)===id));
 }
 function render(){
  [['todo','Todo',MENU.reduce((n,c)=>n+c.platillos.length,0)],...MENU.map(c=>[slug(c.categoria),c.categoria,c.platillos.length])].forEach(([id,name,count])=>{
@@ -267,50 +265,12 @@ function render(){
  const dishes=document.createElement('div');dishes.className='dishes';
  c.platillos.forEach(p=>{const article=document.createElement('article');article.className='dish';article.append(textElement('h3',p.nombre));if(p.desc)article.append(textElement('p',p.desc));dishes.append(article)});
  section.append(dishes);$('menu').append(section);
- const o=textElement('option',c.categoria);o.value=i;$('exportCategory').append(o);
  });
  const hash=location.hash.slice(1);selectCategory(MENU.some(c=>slug(c.categoria)===hash)?hash:'todo',false);
 }
 function shareUrl(){const u=new URL(location.href);u.search='';return u.href}
 async function copyLink(){try{await navigator.clipboard.writeText(shareUrl());notice('Enlace copiado. Pégalo en tu publicación o mensaje.')}catch{window.prompt('Copia este enlace para compartir el menú:',shareUrl())}}
 $('copy').onclick=copyLink;
-$('share').onclick=async()=>{if(navigator.share){try{await navigator.share({title:'Restaurante Majo · Menú',url:shareUrl()});return}catch(e){if(e.name==='AbortError')return}}await copyLink()};
-$('openExport').onclick=()=>$('exportDialog').showModal();
-$('closeExport').onclick=()=>$('exportDialog').close();
-function clearCards(){exportUrls.forEach(URL.revokeObjectURL);exportUrls=[];$('cards').replaceChildren()}
-$('exportCategory').onchange=()=>{clearCards();$('exportStatus').textContent=''};
-function wrap(ctx,text,width){const result=[];let line='';for(const word of text.split(/\s+/)){const next=line?line+' '+word:word;if(ctx.measureText(next).width>width&&line){result.push(line);line=word}else line=next}if(line)result.push(line);return result}
-function layoutCategory(ctx,c){
- const rows=c.platillos.map(p=>{ctx.font='700 32px "Jost", sans-serif';const names=wrap(ctx,p.nombre,936);ctx.font='400 27px "Jost", sans-serif';const desc=p.desc?wrap(ctx,p.desc,936):[];return {names,desc,height:names.length*42+desc.length*36+(desc.length?12:0)+38}});
- ctx.font='400 25px "Jost", sans-serif';const subtitle=c.subtitle?wrap(ctx,c.subtitle,936):[];
- const top=300+subtitle.length*34;const pages=[];let page=[],y=top;
- rows.forEach(row=>{if(y+row.height>1190&&page.length){pages.push(page);page=[];y=top}page.push(row);y+=row.height});if(page.length)pages.push(page);return{pages,subtitle,top};
-}
-async function generate(){
- const button=$('generate');button.disabled=true;$('exportStatus').textContent='Preparando imágenes…';clearCards();
- try{
- await document.fonts.ready;
- const c=MENU[Number($('exportCategory').value)],canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1350;const ctx=canvas.getContext('2d');
- const {pages,subtitle,top}=layoutCategory(ctx,c);
- for(let index=0;index<pages.length;index++){
- ctx.fillStyle='#FAF6EE';ctx.fillRect(0,0,1080,1350);ctx.fillStyle='#1a2236';ctx.fillRect(0,0,1080,150);ctx.fillStyle='#E0A94E';ctx.fillRect(0,150,1080,6);
- ctx.fillStyle='#fff';ctx.font='600 56px "Cormorant Garamond", Georgia';ctx.fillText('Restaurante Majo',72,96);
- ctx.fillStyle='#1a2236';ctx.font='600 54px "Cormorant Garamond", Georgia';ctx.fillText(c.categoria,72,240);
- ctx.font='400 25px "Jost", sans-serif';subtitle.forEach((line,j)=>ctx.fillText(line,72,280+j*34));
- let y=top;
- pages[index].forEach(row=>{ctx.fillStyle='#1a2236';ctx.font='700 32px "Jost", sans-serif';row.names.forEach(line=>{ctx.fillText(line,72,y+32);y+=42});if(row.desc.length){y+=12;ctx.fillStyle='#4d5668';ctx.font='400 27px "Jost", sans-serif';row.desc.forEach(line=>{ctx.fillText(line,72,y+27);y+=36})}y+=18;ctx.fillStyle='#ded8cb';ctx.fillRect(72,y,936,1);y+=20});
- ctx.fillStyle='#1a2236';ctx.fillRect(0,1220,1080,130);ctx.fillStyle='#fff';ctx.font='500 24px "Jost", sans-serif';ctx.fillText('Majo Otay · Majo Express',72,1267);ctx.font='400 22px "Jost", sans-serif';ctx.fillText('Menú informativo',72,1307);ctx.textAlign='right';ctx.fillText((index+1)+' / '+pages.length,1008,1307);ctx.textAlign='left';
- const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw Error('No image');
- const url=URL.createObjectURL(blob);exportUrls.push(url);const box=document.createElement('div');box.className='social-card';const img=document.createElement('img');img.src=url;img.alt=c.categoria+' · página '+(index+1);box.append(img);
- const filename='majo-'+slug(c.categoria)+'-'+(index+1)+'.png';const a=textElement('a','Guardar imagen '+(index+1),'btn');a.href=url;a.download=filename;box.append(a);
- const file=new File([blob],filename,{type:'image/png'});
- if(navigator.canShare&&navigator.canShare({files:[file]})){const b=textElement('button','Compartir imagen ↗','btn');b.onclick=async()=>{try{await navigator.share({files:[file],title:'Menú Majo · '+c.categoria})}catch(e){if(e.name!=='AbortError')notice('Guarda la imagen y adjúntala desde tu aplicación.')}};box.append(b)}
- $('cards').append(box);
- }
- $('exportStatus').textContent=pages.length+' imagen'+(pages.length===1?'':'es')+' lista'+(pages.length===1?'':'s')+' · 1080 × 1350 px. Guarda cada página para tu publicación.';
- }catch(e){$('exportStatus').textContent='No se pudieron crear las imágenes. Inténtalo de nuevo.'}finally{button.disabled=false}
-}
-$('generate').onclick=generate;
 window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);selectCategory(MENU.some(c=>slug(c.categoria)===id)?id:'todo',false)});
 
 function applySearch(){
