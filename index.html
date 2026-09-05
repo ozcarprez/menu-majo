@@ -29,265 +29,1144 @@ h1 em{font-weight:600;color:#956326}h1{font-size:clamp(2.8rem,6vw,4.2rem)}.intro
 @media(max-width:760px){.brand-note{display:none}.browse{padding:0 20px 12px}.navigation{position:static;padding:0 0 20px;margin-bottom:24px}.categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.cat{font-size:.9375rem;padding:10px;justify-content:center;text-align:center;min-height:48px}.cat span{display:none}.intro-actions{margin-top:14px}.intro{padding-top:22px}.section h2{font-size:2rem}.outline{font-size:.875rem;padding:9px 12px}.masthead{gap:12px}}
 @media(max-width:380px){.categories{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media print{.browse{display:none}.dish[hidden]{display:block!important}.section[hidden]{display:block!important}}
+.meal-switch{display:flex;gap:8px;margin:0 0 24px;max-width:650px}.meal-btn{flex:1;border:1px solid #2B7A6A;background:transparent;color:#245f53;font:600 1.125rem 'Jost',sans-serif;padding:13px 20px;border-radius:5px}.meal-btn[aria-pressed="true"]{background:#2B7A6A;color:white}.meal-btn:focus-visible{outline:3px solid #956326;outline-offset:3px}@media(max-width:760px){.section-index{font-size:.75rem;letter-spacing:.04em}.section-head{align-items:center}}@media print{.meal-switch{display:none}}
 </style>
 </head>
 <body>
 <a class="skip" href="#menu">Ir al menú</a>
 <header class="masthead"><img class="logo" src="logo_majo.png" alt="Restaurante Majo"><a class="brand-note home-link" href="https://restaurante-majo.vercel.app/">Conoce el restaurante ↗</a></header>
 <div class="intro"><div><p class="eyebrow">Restaurante Majo</p><h1>Nuestro <em>menú</em></h1><p>Desayunos, especialidades y algo dulce.</p></div><div class="intro-actions"><button class="btn" id="copy">Copiar enlace</button></div></div>
-<div class="browse"><label for="dishSearch">¿Qué se te antoja?</label><div class="search-row"><input id="dishSearch" type="search" placeholder="Busca chilaquiles, pollo, café…" autocomplete="off"><button class="btn" id="clearSearch" hidden>Limpiar</button></div><p id="searchStatus" class="status" role="status"></p></div><div class="layout"><aside class="navigation"><p class="nav-title">Elige una categoría</p><nav class="categories" id="categories" aria-label="Categorías del menú"></nav></aside><main id="menu" tabindex="-1"></main></div>
+<div class="browse"><div class="meal-switch" role="group" aria-label="Elige tu menú"><button class="meal-btn" data-meal="desayunos" aria-pressed="true">Desayunos</button><button class="meal-btn" data-meal="comidas" aria-pressed="false">Comidas</button></div><label id="searchLabel" for="dishSearch">¿Qué se te antoja?</label><div class="search-row"><input id="dishSearch" type="search" placeholder="Busca chilaquiles, pollo, café…" autocomplete="off"><button class="btn" id="clearSearch" hidden>Limpiar</button></div><p id="searchStatus" class="status" role="status"></p></div><div class="layout"><aside class="navigation"><p class="nav-title">Elige una categoría</p><nav class="categories" id="categories" aria-label="Categorías del menú"></nav></aside><main id="menu" tabindex="-1"></main></div>
 <section class="locations" aria-labelledby="locations-title"><div class="locations-inner"><h2 id="locations-title">Encuéntranos</h2><div><h3>Majo Otay</h3><p>Blvd Industrial 2do Eje esq. 7 Sur</p></div><div><h3>Majo Express</h3><p>Alejandro Humboldt #1706-1</p></div></div></section>
 <footer>Restaurante Majo · Menú informativo</footer>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
-  const MENU = [
-    {
-      categoria: 'Huevos',
-      emoji: '🍳',
-      platillos: [
-        { nombre: 'Desayuno Especial', desc: 'Incluye guarnición del día' },
-        { nombre: 'Huevos con Jamón, Tocino, Chorizo o a la Mexicana', desc: '' },
-        { nombre: 'Huevos Tijuana', desc: '' },
-        { nombre: 'Huevos Don Luis', desc: '2 pzas de tortilla, jamón, queso, huevo al gusto bañados en salsa de chicharrón' },
-        { nombre: 'Corundas', desc: 'Dos huevos montados sobre tostadas untadas con frijol refrito, queso fresco y rebanadas de aguacate' },
-        { nombre: 'Tarascos', desc: 'Dos huevos montados en tortilla y jamón, bañados en salsa verde' },
-        { nombre: 'Rancheros', desc: 'Dos huevos encima de tortilla de maíz con salsa ranchera' },
-        { nombre: 'Al Albañil', desc: 'Huevo revuelto, cilantro, tomatillo, cebolla y chile chipotle' },
-        { nombre: 'Divorciados', desc: 'Dos tortillas con dos huevos, una salsa roja, otra salsa verde' },
-        { nombre: 'Huevo con Nopales y Chorizo', desc: '' },
-        { nombre: 'Motuleños', desc: 'Tortilla con frijol, encima dos huevos con jamón y salsa ranchera' },
-        { nombre: 'Victors', desc: 'Dos tortillas, jamón y queso encima con dos huevos bañados en salsa' },
-        { nombre: 'Huevos del Campo', desc: 'Tortilla, 2 piezas de huevo al gusto con cebolla y cilantro' },
-        { nombre: 'Torta de Huevo MAJO', desc: 'Torta de huevo en salsa roja o verde con nopales' },
-        { nombre: 'Torta de Huevo con Espinacas', desc: '' },
-        { nombre: 'Torta de Huevo Española', desc: 'Torta de huevo con chorizo, espinacas, papas, cebolla y champiñones' },
-      ]
-    },
-    {
-      categoria: 'Hot Cakes',
-      emoji: '🥞',
-      platillos: [
-        { nombre: 'Hot Cakes con Huevo', desc: '' },
-        { nombre: 'Hot Cakes con Platano y Lechera', desc: '' },
-        { nombre: 'Hot Cakes con Platano y Nutella', desc: '' },
-        { nombre: 'Hot Cakes con Chispas de Chocolate', desc: '' },
-        { nombre: 'Hot Cakes Chocolate Abuelita', desc: '' },
-        { nombre: 'Hot Cakes con Tocino o Salchicha', desc: '' },
-        { nombre: 'Hot Cakes con Fresa', desc: '' },
-        { nombre: 'Hot Cakes con Plátano', desc: '' },
-        { nombre: 'Hot Cakes Rellenos de Queso Cottage', desc: 'Con fruta de temporada' },
-        { nombre: 'Crepa con Huevo', desc: '' },
-        { nombre: 'Grand Slam', desc: '2 piezas de hot cakes, dos huevos, dos piezas de tocino y dos piezas de salchicha y jamón' },
-        { nombre: 'Pan Francés con Plátano o Fresa', desc: 'Flameado con una bola de nieve' },
-        { nombre: "Pan Francés S'more", desc: 'Con fresas, chocolate y bombón quemado' },
-        { nombre: 'Gran Slam Pan Francés', desc: '' },
-      ]
-    },
-    {
-      categoria: 'Omelettes',
-      emoji: '🥚',
-      platillos: [
-        { nombre: 'Omelett de Machaca', desc: 'Bañado en salsa roja' },
-        { nombre: 'Omelett Campesino', desc: 'Aguacate, jamón, cilantro y cebolla adentro' },
-        { nombre: 'Omelett Hacienda', desc: 'Jamón, queso, cebolla y chile bañado en crema chipotle' },
-        { nombre: 'Omelett Vegetariano', desc: 'Omelett de claras relleno de verduras con salsa ranch' },
-        { nombre: 'Omelett Rajas Poblanas', desc: 'Relleno de rajas en crema con elote y cebolla' },
-        { nombre: 'Omelett Champiñones', desc: '' },
-        { nombre: 'Omelett Aguacate', desc: 'Omelett relleno de aguacate bañado en salsa de queso' },
-        { nombre: 'Omelett Mojo', desc: 'De queso bañado en salsa de mole' },
-        { nombre: 'Omelett Texano', desc: 'Relleno de queso, arrachera y tomate, salsa a escoger' },
-        { nombre: 'Omelett María', desc: 'Jamón, queso, cebolla y ejote saltado en rajas poblanas' },
-        { nombre: 'Omelett Cucaracha', desc: 'Chicharrón en salsa roja con trocitos de tortilla dorada' },
-        { nombre: 'Omelett Divorciado', desc: 'De queso con cebolla y cilantro bañado en salsa roja y verde' },
-        { nombre: 'Omelett de Chilaquiles', desc: 'Salsa roja y verde' },
-        { nombre: 'Omelette de Salsa Suiza', desc: 'Omelett bañado en salsa de crema de tomatillo' },
-        { nombre: 'Omelett de Nopales', desc: '' },
-        { nombre: 'Omelett de Espinacas', desc: '' },
-        { nombre: 'Omelett Queso Jamón y Tocino', desc: '' },
-        { nombre: 'Omelett de la Casa', desc: 'Queso fresco, rajas, champiñones, cebolla bañado en crema chipotle' },
-        { nombre: 'Omelett Maximo', desc: 'Blanchicha, jamón, tocino, cebolla, chile morrón y champiñones' },
-        { nombre: 'Omelett Camarones en Crema Chipotle', desc: '' },
-      ]
-    },
-    {
-      categoria: 'Chilaquiles',
-      emoji: '🫔',
-      platillos: [
-        { nombre: 'Chilaquiles Rojos o Verdes', desc: '' },
-        { nombre: 'Chilaquiles c/Pollo, Rojos, Verdes o Mole', desc: '' },
-        { nombre: 'Chilaquiles c/Huevo Rojos, Verdes o Mole', desc: '' },
-        { nombre: 'Chilaquiles c/Carne Asada Rojos, Verdes o Mole', desc: '' },
-        { nombre: 'Chilaquiles c/Pollo Suizos o Crema Chipotle', desc: '' },
-        { nombre: 'Chilaquiles c/Huevo Suizos o Crema Chipotle', desc: '' },
-        { nombre: 'Chilaquiles c/Carne Asada Suizos o Crema Chipotle', desc: '' },
-        { nombre: 'Chilaquiles c/Machaca Ranchera', desc: '' },
-        { nombre: 'Chilaquiles c/Camarón, salsa y queso al gusto', desc: '' },
-        { nombre: 'Tour Chilaquiles', desc: '3 porciones de chilaquiles sencillos: 1 con mole, 1 en crema chipotle y 1 crema suiza' },
-        { nombre: 'Chilaquiles Don Luis', desc: 'Bañados en una deliciosa salsa de chicharrón con pollo o carne' },
-      ]
-    },
-    {
-      categoria: 'Carnes',
-      emoji: '🥩',
-      platillos: [
-        { nombre: 'Bistec Chipotle c/Huevo', desc: '' },
-        { nombre: 'Bistec Albañil c/Huevo', desc: '' },
-        { nombre: 'Carne Arrachera c/Huevo', desc: '' },
-        { nombre: 'Carne Asada c/Huevo', desc: '' },
-        { nombre: 'Machaca con Huevos', desc: '' },
-        { nombre: 'Machaca Ranchera', desc: '' },
-        { nombre: 'Machaca en Caldillo', desc: '' },
-        { nombre: 'Menudo Rojo o Blanco', desc: 'Sábado y Domingo' },
-      ]
-    },
-    {
-      categoria: 'Aves',
-      emoji: '🍗',
-      platillos: [
-        { nombre: 'Pechuga Xochitl c/Huevo al gusto', desc: '' },
-        { nombre: 'Pechuga Ranchera c/Huevo al gusto', desc: '' },
-        { nombre: 'Pechuga Albañil c/Huevo al gusto', desc: '' },
-        { nombre: 'Pechuga Rajas Poblanas c/Huevo al gusto', desc: '' },
-        { nombre: 'Pechuga a la Plancha', desc: 'Con ensalada de nopal y huevo al gusto' },
-        { nombre: 'Fajitas de Pollo c/Huevo', desc: '' },
-      ]
-    },
-    {
-      categoria: 'Antojitos',
-      emoji: '🌮',
-      platillos: [
-        { nombre: 'Mollette con Salsa Ranchera', desc: '' },
-        { nombre: 'Molletes con Jamón o Tocino', desc: '' },
-        { nombre: 'Enfrijoladas', desc: '' },
-        { nombre: 'Quesadillas Sencillas de Harina', desc: '' },
-        { nombre: 'Quesadillas de Harina con Carne', desc: '2 piezas, maíz 4 piezas' },
-        { nombre: 'Enchiladas Rojas, Verdes, Mole de Queso o Pollo', desc: '' },
-        { nombre: 'Enchiladas Suizas', desc: 'Enchiladas de pollo en crema de tomate gratinadas' },
-        { nombre: 'Carne Asada c/Huevo al Gusto', desc: 'Con 2 enchiladas: verde, rojas, pollo, queso' },
-      ]
-    },
-    {
-      categoria: 'Ensaladas y Avena',
-      emoji: '🥗',
-      platillos: [
-        { nombre: 'Ensalada de Frutas Chica', desc: '' },
-        { nombre: 'Ensalada de Fruta Grande', desc: '' },
-        { nombre: 'Avena Chica con Pan Tostado y Plátano', desc: '' },
-        { nombre: 'Manzana o Papaya', desc: '' },
-        { nombre: 'Avena Grande con Pan Tostado y Plátano', desc: '' },
-        { nombre: 'Manzana o Papaya Grande', desc: '' },
-        { nombre: 'Ensalada de Nopal', desc: '' },
-      ]
-    },
-    {
-      categoria: 'Bebidas',
-      emoji: '☕',
-      platillos: [
-        { nombre: 'Café', desc: '' },
-        { nombre: 'Café de Olla', desc: '' },
-        { nombre: 'Vaso de Leche', desc: '' },
-        { nombre: 'Licuado de Fresa, Plátano o Papaya', desc: '' },
-        { nombre: 'Malteada de Fresa, Chocolate o Vainilla', desc: '' },
-        { nombre: 'Té Caliente', desc: '' },
-        { nombre: 'Chocomilk', desc: '' },
-        { nombre: 'Chocolate Caliente', desc: '' },
-        { nombre: 'Jugo de Naranja', desc: '' },
-        { nombre: 'Jugo de Toronja', desc: '' },
-        { nombre: 'Jugo de Zanahoria', desc: '' },
-        { nombre: 'Jugo de Naranja con Zanahoria', desc: '' },
-        { nombre: 'Jugo de Naranja con Nopal', desc: '' },
-        { nombre: 'Jugo Verde', desc: '' },
-        { nombre: 'Taza de Avena', desc: '' },
-        { nombre: 'Limonada Mineral', desc: '' },
-        { nombre: 'Naranjada Mineral', desc: '' },
-        { nombre: 'Té Helado', desc: '' },
-        { nombre: 'Agua del Día', desc: '' },
-        { nombre: 'Limonada', desc: '' },
-        { nombre: 'Naranjada', desc: '' },
-        { nombre: 'Jarra de Agua', desc: '' },
-        { nombre: 'Jarra de Limonada Mineral', desc: '' },
-        { nombre: 'Sodas', desc: '' },
-      ]
-    },
-    {
-      categoria: 'Postres',
-      emoji: '🍰',
-      platillos: [
-        { nombre: 'Pastel de Queso', desc: '' },
-        { nombre: 'Jericaya', desc: '' },
-        { nombre: 'Flan de la Casa', desc: '' },
-        { nombre: 'Crepas', desc: '' },
-      ]
-    },
-    {
-      categoria: 'Combinaciones',
-      emoji: '⭐',
-      subtitle: 'Chilaquiles a elegir (rojos, suizos, chipotle, mole o San Luis) — Incluyen café',
-      platillos: [
-        { nombre: 'Combinación 1: con Pancakes 3pz', desc: '' },
-        { nombre: 'Combinación 2: con Pan Francés', desc: '' },
-        { nombre: 'Combinación 3: con Crepa', desc: 'Nutella, crema con mermelada' },
-      ]
-    },
-    {
-      categoria: 'Niños',
-      emoji: '👧',
-      subtitle: 'Todos incluyen bebida: Leche, Jugo de Naranja o Chocomilk',
-      platillos: [
-        { nombre: 'Carita Feliz de Hot Cake con Huevo, Tocino, Jamón o Salchicha', desc: '' },
-        { nombre: '2 Piezas Hot Cakes con Huevo, Tocino, Jamón o Salchicha', desc: '' },
-        { nombre: '2 Quesadillas de Maíz con Huevo, Frijoles y Papas', desc: '' },
-        { nombre: '1 Quesadilla de Harina con Huevo, Frijoles y Papas', desc: '' },
-        { nombre: '1 Pan Francés con Huevo, Tocino, Jamón o Salchicha', desc: '' },
-      ]
-    }
-  ];
+const MENU = [
+  {
+    "tipo": "desayunos",
+    "categoria": "Huevos",
+    "subtitle": "Nuestros platillos incluyen guarnición del día.",
+    "platillos": [
+      {
+        "nombre": "Desayuno Especial",
+        "desc": ""
+      },
+      {
+        "nombre": "Huevos con Jamón, Tocino, Chorizo o a la Mexicana",
+        "desc": ""
+      },
+      {
+        "nombre": "Huevos Tijuana",
+        "desc": ""
+      },
+      {
+        "nombre": "Huevos Don Luis",
+        "desc": "2 piezas de tortilla, jamón, queso y 2 huevos al gusto, bañados en salsa de chicharrón con cilantro y cebolla."
+      },
+      {
+        "nombre": "Cananea",
+        "desc": "Dos huevos montados sobre dos tostadas untadas con frijol refrito, queso fresco y rebanadas de aguacate. Acompañados con guarnición de ensalada de nopal."
+      },
+      {
+        "nombre": "Tarascos",
+        "desc": "Dos huevos montados en una tortilla y jamón, bañados en salsa verde, queso cotija y rebanadas de aguacate."
+      },
+      {
+        "nombre": "Rancheros",
+        "desc": "Dos huevos encima de tortilla de maíz con salsa ranchera."
+      },
+      {
+        "nombre": "Al Albañil",
+        "desc": "Huevo revuelto con tocino, tomatillo, cebolla y chile chipotle."
+      },
+      {
+        "nombre": "Divorciados",
+        "desc": "Dos tortillas con dos huevos, separados: una salsa roja y otra salsa verde."
+      },
+      {
+        "nombre": "Huevo con Nopales y Chorizo",
+        "desc": ""
+      },
+      {
+        "nombre": "Motuleños",
+        "desc": "Tortilla con frijol, encima dos huevos con queso y jamón, con salsa ranchera y chícharos."
+      },
+      {
+        "nombre": "Victors",
+        "desc": "Dos tortillas, jamón y queso encima, con dos huevos bañados en salsa."
+      },
+      {
+        "nombre": "Huevos del Campo",
+        "desc": "Tortilla y 2 huevos al gusto con cebolla y cilantro, bañados en salsa verde con crema y queso fresco."
+      },
+      {
+        "nombre": "Torta de Huevo MAJO",
+        "desc": "Torta de huevo en salsa roja o verde con nopales."
+      },
+      {
+        "nombre": "Torta de Huevo con Espinacas",
+        "desc": ""
+      },
+      {
+        "nombre": "Torta de Huevo Española",
+        "desc": "Torta de huevo con chorizo, espinacas, papas, cebolla y champiñones."
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Hot Cakes y más",
+    "platillos": [
+      {
+        "nombre": "Hot Cakes",
+        "desc": ""
+      },
+      {
+        "nombre": "Hot Cakes con Huevo",
+        "desc": ""
+      },
+      {
+        "nombre": "Hot Cakes con Plátano y Lechera",
+        "desc": ""
+      },
+      {
+        "nombre": "Hot Cakes con Plátano y Nutella",
+        "desc": ""
+      },
+      {
+        "nombre": "Hot Cakes con Chispas de Chocolate",
+        "desc": ""
+      },
+      {
+        "nombre": "Hot Cakes Chocolate Abuelita",
+        "desc": ""
+      },
+      {
+        "nombre": "Hot Cakes con Tocino o Salchicha",
+        "desc": ""
+      },
+      {
+        "nombre": "Hot Cakes con Fresa",
+        "desc": ""
+      },
+      {
+        "nombre": "Hot Cakes con Plátano",
+        "desc": ""
+      },
+      {
+        "nombre": "Hot Cakes Rellenos de Queso Cottage",
+        "desc": "Con fruta de temporada."
+      },
+      {
+        "nombre": "Crepa con Huevo",
+        "desc": "Crepa de Nutella, cajeta o fresa flameada, con 2 huevos al gusto y 2 piezas de salchicha, jamón o tocino."
+      },
+      {
+        "nombre": "Grand Slam",
+        "desc": "2 hot cakes, dos huevos, dos piezas de tocino, dos piezas de salchicha y jamón."
+      },
+      {
+        "nombre": "Pan Francés con Plátano o Fresa",
+        "desc": "Flameado con una bola de nieve."
+      },
+      {
+        "nombre": "Pan Francés Smore",
+        "desc": "Pan francés con chocolate y bombón quemado."
+      },
+      {
+        "nombre": "Gran Slam Pan Francés",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Omelettes",
+    "subtitle": "Nuestros platillos incluyen guarnición del día.",
+    "platillos": [
+      {
+        "nombre": "Omelette de Machaca",
+        "desc": "Bañado en salsa roja."
+      },
+      {
+        "nombre": "Omelette Campesino",
+        "desc": "Aguacate, queso, jamón, cilantro y cebolla adentro, bañado en salsa suiza."
+      },
+      {
+        "nombre": "Omelette Hacienda",
+        "desc": "Jamón, queso, cebolla y elote, bañado en crema chipotle."
+      },
+      {
+        "nombre": "Omelette Vegetariano",
+        "desc": "Omelette de claras relleno de verduras con salsa ranch."
+      },
+      {
+        "nombre": "Omelette Rajas Poblanas",
+        "desc": "Bañado en crema con rajas, elote y cebolla."
+      },
+      {
+        "nombre": "Omelette Champiñones",
+        "desc": ""
+      },
+      {
+        "nombre": "Omelette Aguacate",
+        "desc": "Relleno de aguacate, bañado en salsa de queso."
+      },
+      {
+        "nombre": "Omelette Mole",
+        "desc": "De queso, bañado en salsa de mole."
+      },
+      {
+        "nombre": "Omelette Texano",
+        "desc": "Relleno de queso y arrachera marinada. Salsa a escoger: verde, roja, ranchera o San Luis."
+      },
+      {
+        "nombre": "Omelette María",
+        "desc": "Jamón, queso, cebolla y elote, bañado en rajas poblanas."
+      },
+      {
+        "nombre": "Omelette Cachanilla",
+        "desc": "Chicharrón en salsa roja con trozos de tortilla dorada y queso con cebolla y cilantro, bañado en salsa roja."
+      },
+      {
+        "nombre": "Omelette Divorciado",
+        "desc": "Queso, aguacate y tocino, bañado en crema, salsa roja y verde."
+      },
+      {
+        "nombre": "Omelette de Chilaquiles",
+        "desc": "Salsa roja y verde."
+      },
+      {
+        "nombre": "Omelette de Salsa Suiza",
+        "desc": "Bañado en salsa de crema de tomatillo."
+      },
+      {
+        "nombre": "Omelette de Nopales",
+        "desc": ""
+      },
+      {
+        "nombre": "Omelette de Espinacas",
+        "desc": ""
+      },
+      {
+        "nombre": "Omelette Queso, Jamón y Tocino",
+        "desc": ""
+      },
+      {
+        "nombre": "Omelette de la Casa",
+        "desc": "Queso fresco, rajas, champiñones y cebolla, bañado en crema chipotle."
+      },
+      {
+        "nombre": "Omelette Máximo",
+        "desc": "Salchicha, jamón, tocino, cebolla, chile morrón y champiñones."
+      },
+      {
+        "nombre": "Omelette Camarones con Crema Chipotle",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Chilaquiles",
+    "platillos": [
+      {
+        "nombre": "Chilaquiles Rojos o Verdes",
+        "desc": ""
+      },
+      {
+        "nombre": "Chilaquiles con Pollo",
+        "desc": "Rojos, verdes o mole."
+      },
+      {
+        "nombre": "Chilaquiles con Huevos",
+        "desc": "Rojos, verdes o mole."
+      },
+      {
+        "nombre": "Chilaquiles con Carne Asada",
+        "desc": "Rojos, verdes o mole."
+      },
+      {
+        "nombre": "Chilaquiles con Pollo Suizos o Crema Chipotle",
+        "desc": ""
+      },
+      {
+        "nombre": "Chilaquiles con Huevos Suizos o Chipotle",
+        "desc": ""
+      },
+      {
+        "nombre": "Chilaquiles con Carne Asada Suizos o Crema Chipotle",
+        "desc": ""
+      },
+      {
+        "nombre": "Chilaquiles con Machaca Ranchera",
+        "desc": ""
+      },
+      {
+        "nombre": "Chilaquiles con Camarón",
+        "desc": "Salsa y queso al gusto."
+      },
+      {
+        "nombre": "Tour Chilaquiles",
+        "desc": "3 porciones de chilaquiles sencillos: 1 con mole, 1 en crema de chipotle y 1 en crema suiza, con queso al gusto."
+      },
+      {
+        "nombre": "Chilaquiles Don Luis",
+        "desc": "Bañados en salsa de chile de árbol, con pollo, huevo o carne."
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Carnes",
+    "platillos": [
+      {
+        "nombre": "Bistec Chipotle con Huevo",
+        "desc": ""
+      },
+      {
+        "nombre": "Bistec Albañil con Huevo",
+        "desc": ""
+      },
+      {
+        "nombre": "Carne Arrachera con Huevo",
+        "desc": ""
+      },
+      {
+        "nombre": "Carne Asada con Huevo",
+        "desc": ""
+      },
+      {
+        "nombre": "Machaca con Huevos",
+        "desc": ""
+      },
+      {
+        "nombre": "Machaca Ranchera",
+        "desc": ""
+      },
+      {
+        "nombre": "Machaca en Caldillo",
+        "desc": ""
+      },
+      {
+        "nombre": "Menudo Rojo o Blanco",
+        "desc": "Sábado y domingo. Mediano o grande."
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Aves",
+    "platillos": [
+      {
+        "nombre": "Pechuga Xochitl con Huevo al Gusto",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga Ranchero con Huevo al Gusto",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga Albañil con Huevo al Gusto",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga Rajas Poblanas con Huevo al Gusto",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga a la Plancha",
+        "desc": "Con ensalada de nopal y huevo al gusto."
+      },
+      {
+        "nombre": "Fajitas de Pollo con Huevo",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Antojitos Mexicanos",
+    "platillos": [
+      {
+        "nombre": "Mollete con Salsa Ranchera",
+        "desc": ""
+      },
+      {
+        "nombre": "Molletes con Jamón o Tocino",
+        "desc": ""
+      },
+      {
+        "nombre": "Enfrijoladas",
+        "desc": ""
+      },
+      {
+        "nombre": "Quesadillas Sencillas de Harina",
+        "desc": ""
+      },
+      {
+        "nombre": "Quesadillas de Harina con Carne",
+        "desc": "Harina: 2 piezas. Maíz: 4 piezas."
+      },
+      {
+        "nombre": "Enchiladas Rojas, Verdes o Mole",
+        "desc": "De queso o pollo."
+      },
+      {
+        "nombre": "Enchiladas Suizas",
+        "desc": "Enchiladas de pollo, en crema de tomatillo, gratinadas."
+      },
+      {
+        "nombre": "Carne Asada con Huevo al Gusto",
+        "desc": "Con 2 enchiladas: verde, rojas, pollo o queso."
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Combinaciones",
+    "subtitle": "Chilaquiles a elegir: verdes, rojos, suizos, chipotle, mole o San Luis. Incluyen café.",
+    "platillos": [
+      {
+        "nombre": "Combinación con Pancakes",
+        "desc": "3 piezas."
+      },
+      {
+        "nombre": "Combinación con Pan Francés",
+        "desc": ""
+      },
+      {
+        "nombre": "Combinación con Crepa",
+        "desc": "Nutella o crema con mermelada."
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Ensalada de Frutas y Avena",
+    "platillos": [
+      {
+        "nombre": "Ensalada de Frutas Chica",
+        "desc": ""
+      },
+      {
+        "nombre": "Ensalada de Fruta Grande",
+        "desc": ""
+      },
+      {
+        "nombre": "Avena Chica con Pan Tostado",
+        "desc": "Con plátano, manzana o papaya."
+      },
+      {
+        "nombre": "Avena Grande con Pan Tostado",
+        "desc": "Con plátano, manzana o papaya."
+      },
+      {
+        "nombre": "Ensalada de Nopal",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Bebidas",
+    "platillos": [
+      {
+        "nombre": "Café",
+        "desc": ""
+      },
+      {
+        "nombre": "Café de Olla",
+        "desc": ""
+      },
+      {
+        "nombre": "Vaso de Leche",
+        "desc": ""
+      },
+      {
+        "nombre": "Licuados de Fresa, Plátano o Papaya",
+        "desc": ""
+      },
+      {
+        "nombre": "Malteada de Fresa, Chocolate y Vainilla",
+        "desc": ""
+      },
+      {
+        "nombre": "Té Caliente",
+        "desc": ""
+      },
+      {
+        "nombre": "Chocomilk",
+        "desc": ""
+      },
+      {
+        "nombre": "Chocolate Caliente",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo de Naranja",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo de Toronja",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo de Zanahoria",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo de Naranja con Zanahoria",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo de Naranja con Nopal",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo Verde",
+        "desc": ""
+      },
+      {
+        "nombre": "Taza de Avena",
+        "desc": ""
+      },
+      {
+        "nombre": "Limonada Mineral",
+        "desc": ""
+      },
+      {
+        "nombre": "Naranjada Mineral",
+        "desc": ""
+      },
+      {
+        "nombre": "Té Helado",
+        "desc": ""
+      },
+      {
+        "nombre": "Agua del Día",
+        "desc": ""
+      },
+      {
+        "nombre": "Limonada",
+        "desc": ""
+      },
+      {
+        "nombre": "Naranjada",
+        "desc": ""
+      },
+      {
+        "nombre": "Jarra de Agua",
+        "desc": ""
+      },
+      {
+        "nombre": "Jarra de Limonada Mineral",
+        "desc": ""
+      },
+      {
+        "nombre": "Sodas",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "desayunos",
+    "categoria": "Postres",
+    "platillos": [
+      {
+        "nombre": "Pastel de Queso",
+        "desc": ""
+      },
+      {
+        "nombre": "Jericaya",
+        "desc": ""
+      },
+      {
+        "nombre": "Flan de la Casa",
+        "desc": ""
+      },
+      {
+        "nombre": "Crepas",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Para Empezar",
+    "platillos": [
+      {
+        "nombre": "Queso Fundido",
+        "desc": ""
+      },
+      {
+        "nombre": "Queso Fundido con Champiñones",
+        "desc": ""
+      },
+      {
+        "nombre": "Queso Fundido con Chorizo",
+        "desc": ""
+      },
+      {
+        "nombre": "Queso Fundido con Tocino",
+        "desc": ""
+      },
+      {
+        "nombre": "Queso Fundido Mixto",
+        "desc": "Chorizo, champiñones y tocino."
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Sopas",
+    "platillos": [
+      {
+        "nombre": "Sopa del Día",
+        "desc": ""
+      },
+      {
+        "nombre": "Sopa de Tortilla",
+        "desc": ""
+      },
+      {
+        "nombre": "Consomé de Pollo",
+        "desc": ""
+      },
+      {
+        "nombre": "Tlalpeño",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Ensaladas",
+    "platillos": [
+      {
+        "nombre": "Ensalada de Pollo o Atún",
+        "desc": ""
+      },
+      {
+        "nombre": "Ensalada Majo",
+        "desc": ""
+      },
+      {
+        "nombre": "Ensalada Cheff",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Carnes",
+    "platillos": [
+      {
+        "nombre": "Bistecitos Rancheros",
+        "desc": ""
+      },
+      {
+        "nombre": "Bistecitos al Chipotle",
+        "desc": ""
+      },
+      {
+        "nombre": "Carne en su Jugo",
+        "desc": ""
+      },
+      {
+        "nombre": "Milanesa",
+        "desc": ""
+      },
+      {
+        "nombre": "Carne Asada",
+        "desc": ""
+      },
+      {
+        "nombre": "Milanesa Napolitana",
+        "desc": ""
+      },
+      {
+        "nombre": "Sabanita Invierno",
+        "desc": ""
+      },
+      {
+        "nombre": "Carne Asada Tampiqueña",
+        "desc": ""
+      },
+      {
+        "nombre": "Fajitas Mixtas",
+        "desc": ""
+      },
+      {
+        "nombre": "Carne Arrachera",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Aves",
+    "platillos": [
+      {
+        "nombre": "Pechuga Tampiqueña",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga a la Plancha",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga al Chipotle",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga Empanizada",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga Florentina",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga Rajas Poblanas",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechugas Xochitl",
+        "desc": ""
+      },
+      {
+        "nombre": "Fajitas de Pollo",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga Miel y Mostaza",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga Curry",
+        "desc": ""
+      },
+      {
+        "nombre": "Pechuga Cordo Blue",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Antojitos",
+    "platillos": [
+      {
+        "nombre": "Enchiladas de Pollo o Queso",
+        "desc": "Verdes, rojas o mole."
+      },
+      {
+        "nombre": "Enchiladas Suizas",
+        "desc": ""
+      },
+      {
+        "nombre": "Enchiladas Bandera",
+        "desc": "De pollo, bañadas en crema, salsa roja y verde."
+      },
+      {
+        "nombre": "Quesadillas de Harina",
+        "desc": "Harina: 2 piezas. Maíz: 4 piezas."
+      },
+      {
+        "nombre": "Quesadillas de Harina con Carne",
+        "desc": "Harina: 2 piezas. Maíz: 3 piezas."
+      },
+      {
+        "nombre": "Chile Relleno",
+        "desc": ""
+      },
+      {
+        "nombre": "Club Sándwich",
+        "desc": ""
+      },
+      {
+        "nombre": "Tacos de Carne Asada",
+        "desc": ""
+      },
+      {
+        "nombre": "Hamburguesa",
+        "desc": ""
+      },
+      {
+        "nombre": "Hamburguesa Búfalo",
+        "desc": "Pollo empanizado, salsa búfalo y ranch."
+      },
+      {
+        "nombre": "Hamburguesa Especial",
+        "desc": "Res con queso, jamón y tocino."
+      },
+      {
+        "nombre": "Hamburguesa Majo",
+        "desc": "Pollo, jamón, queso, tocino, mayonesa, chipotle y aguacate."
+      },
+      {
+        "nombre": "Torta Especial",
+        "desc": ""
+      },
+      {
+        "nombre": "Torta de Carne Asada",
+        "desc": ""
+      },
+      {
+        "nombre": "Torta de Milanesa",
+        "desc": ""
+      },
+      {
+        "nombre": "Torta de Jamón con Queso",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Pastas",
+    "platillos": [
+      {
+        "nombre": "Fetuchini Majo",
+        "desc": ""
+      },
+      {
+        "nombre": "Fetuccini Alfredo con Pollo",
+        "desc": ""
+      },
+      {
+        "nombre": "Fetuccini Alfredo con Camarón",
+        "desc": ""
+      },
+      {
+        "nombre": "Fetuccini Alfredo Poblano",
+        "desc": ""
+      },
+      {
+        "nombre": "Fetuccini Enchilado",
+        "desc": "A la mantequilla con ajo, cebolla, chile y pollo."
+      },
+      {
+        "nombre": "Fetuccini al Chipotle con Pollo",
+        "desc": ""
+      },
+      {
+        "nombre": "Fetuccini al Chipotle con Camarón",
+        "desc": ""
+      },
+      {
+        "nombre": "Fetuccini al Cilantro con Pollo",
+        "desc": ""
+      },
+      {
+        "nombre": "Fetuccini al Cilantro con Camarón",
+        "desc": ""
+      },
+      {
+        "nombre": "Fetuccini Marinera",
+        "desc": "Con pechuga empanizada gratinada en salsa marinera."
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Comida",
+    "platillos": [
+      {
+        "nombre": "Lonche del Día",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Extras",
+    "platillos": [
+      {
+        "nombre": "Arroz",
+        "desc": ""
+      },
+      {
+        "nombre": "Frijoles",
+        "desc": ""
+      },
+      {
+        "nombre": "Guacamole",
+        "desc": ""
+      },
+      {
+        "nombre": "Totopos",
+        "desc": ""
+      },
+      {
+        "nombre": "Papas Francesas",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Mariscos",
+    "platillos": [
+      {
+        "nombre": "Camarón Ranchero",
+        "desc": ""
+      },
+      {
+        "nombre": "Pescado Plancha",
+        "desc": ""
+      },
+      {
+        "nombre": "Pescado al Cilantro",
+        "desc": ""
+      },
+      {
+        "nombre": "Pescado Empanizado",
+        "desc": ""
+      },
+      {
+        "nombre": "Pescado al Mojo de Ajo",
+        "desc": ""
+      },
+      {
+        "nombre": "Pescado Empapelado",
+        "desc": ""
+      },
+      {
+        "nombre": "Camarones Mojo de Ajo",
+        "desc": ""
+      },
+      {
+        "nombre": "Camarones Empanizados",
+        "desc": ""
+      },
+      {
+        "nombre": "Enchiladas de Camarón",
+        "desc": ""
+      },
+      {
+        "nombre": "Camarones con Crema de Chipotle",
+        "desc": ""
+      },
+      {
+        "nombre": "Camarones al Curry",
+        "desc": ""
+      },
+      {
+        "nombre": "Camarones Enchilados",
+        "desc": ""
+      },
+      {
+        "nombre": "Pescado Veracruz",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Combinaciones",
+    "platillos": [
+      {
+        "nombre": "Mexicana",
+        "desc": "1 sope de papas con chorizo, 1 enchilada roja de queso gratinado y 1 trozo de carne asada."
+      },
+      {
+        "nombre": "Asada con Chile Relleno",
+        "desc": "1 chile relleno con trozo de carne asada."
+      },
+      {
+        "nombre": "3 Sopes",
+        "desc": "1 sope de papas con chorizo, 1 de asada y 1 de pollo."
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Bebidas",
+    "platillos": [
+      {
+        "nombre": "Café",
+        "desc": ""
+      },
+      {
+        "nombre": "Café de Olla",
+        "desc": ""
+      },
+      {
+        "nombre": "Té Caliente",
+        "desc": ""
+      },
+      {
+        "nombre": "Vaso de Leche",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo de Naranja",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo de Zanahoria",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo de Toronja",
+        "desc": ""
+      },
+      {
+        "nombre": "Jugo Verde",
+        "desc": ""
+      },
+      {
+        "nombre": "Limonada Mineral",
+        "desc": ""
+      },
+      {
+        "nombre": "Naranjada Mineral",
+        "desc": ""
+      },
+      {
+        "nombre": "Malteada de Fresa, Chocolate y Vainilla",
+        "desc": ""
+      },
+      {
+        "nombre": "Limonada Natural",
+        "desc": ""
+      },
+      {
+        "nombre": "Naranjada Natural",
+        "desc": ""
+      },
+      {
+        "nombre": "Agua del Día de Frutas Natural",
+        "desc": ""
+      },
+      {
+        "nombre": "Agua de Jamaica",
+        "desc": ""
+      },
+      {
+        "nombre": "Agua de Horchata",
+        "desc": ""
+      },
+      {
+        "nombre": "Té Helado",
+        "desc": ""
+      },
+      {
+        "nombre": "Jarra de Agua de Fruta o Té Helado",
+        "desc": ""
+      },
+      {
+        "nombre": "Jarra de Limonada Mineral",
+        "desc": ""
+      },
+      {
+        "nombre": "Jarra de Naranjada Natural",
+        "desc": ""
+      },
+      {
+        "nombre": "Sodas",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "tipo": "comidas",
+    "categoria": "Postres",
+    "subtitle": "Incluyen 1 bolita de helado de vainilla.",
+    "platillos": [
+      {
+        "nombre": "Pastel de Queso",
+        "desc": ""
+      },
+      {
+        "nombre": "Jericaya",
+        "desc": ""
+      },
+      {
+        "nombre": "Flan de la Casa",
+        "desc": ""
+      },
+      {
+        "nombre": "Crepas",
+        "desc": ""
+      }
+    ]
+  }
+];
+
 
 const $=id=>document.getElementById(id);
-const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-$/,'');
-let current='todo',toastTimer;
 const normalize=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const slug=s=>normalize(s).replace(/[^a-z0-9]+/g,'-').replace(/-$/,'');
+const categoryId=c=>c.tipo+'-'+slug(c.categoria);
+let meal='desayunos',current='todo',toastTimer;
 function notice(text){$('toast').textContent=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').textContent='',5000)}
 function textElement(tag,text,className){const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;return el}
+function syncUrl(){const u=new URL(location.href);u.hash=current==='todo'?meal:current;history.replaceState(null,'',u)}
 function selectCategory(id,update=true){
- current=id;$('dishSearch').value='';$('clearSearch').hidden=true;$('searchStatus').textContent='';document.querySelectorAll('.dish').forEach(d=>d.hidden=false);document.querySelectorAll('.cat').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===id)));
- document.querySelectorAll('.section').forEach(s=>s.hidden=id!=='todo'&&s.id!==id);
- if(update){const u=new URL(location.href);u.hash=id==='todo'?'':id;history.replaceState(null,'',u);$('menu').scrollIntoView({block:'start'})}
+ current=id;$('dishSearch').value='';$('clearSearch').hidden=true;$('searchStatus').textContent='';
+ document.querySelectorAll('.dish').forEach(d=>d.hidden=false);
+ document.querySelectorAll('.cat').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===id)));
+ document.querySelectorAll('.section').forEach(s=>s.hidden=s.dataset.meal!==meal||(id!=='todo'&&s.id!==id));
+ if(update){syncUrl();$('menu').scrollIntoView({block:'start'})}
 }
-function render(){
- [['todo','Todo',MENU.reduce((n,c)=>n+c.platillos.length,0)],...MENU.map(c=>[slug(c.categoria),c.categoria,c.platillos.length])].forEach(([id,name,count])=>{
+function renderCategories(){
+ $('categories').replaceChildren();
+ const cats=MENU.filter(c=>c.tipo===meal);
+ [['todo','Todo',cats.reduce((n,c)=>n+c.platillos.length,0)],...cats.map(c=>[categoryId(c),c.categoria,c.platillos.length])].forEach(([id,name,count])=>{
  const b=textElement('button',name,'cat');b.dataset.category=id;b.append(textElement('span',String(count)));b.onclick=()=>selectCategory(id);$('categories').append(b);
  });
+}
+function selectMeal(value,id='todo',update=true){
+ meal=value;
+ document.querySelectorAll('.meal-btn').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.meal===meal)));
+ $('searchLabel').textContent='¿Qué se te antoja '+(meal==='desayunos'?'desayunar':'comer')+'?';
+ $('dishSearch').placeholder=meal==='desayunos'?'Busca chilaquiles, huevos, café…':'Busca enchiladas, pescado, pasta…';
+ renderCategories();selectCategory(id,false);if(update)syncUrl();
+}
+function readHash(){
+ const hash=location.hash.slice(1);
+ let cat=MENU.find(c=>categoryId(c)===hash);
+ // Keep links shared before the breakfast/lunch split working.
+ if(!cat)cat=MENU.find(c=>slug(c.categoria)===hash);
+ selectMeal(cat?cat.tipo:(hash==='comidas'?'comidas':'desayunos'),cat?categoryId(cat):'todo',false);
+}
+function render(){
  MENU.forEach((c,i)=>{
- const section=document.createElement('section');section.className='section';section.id=slug(c.categoria);section.setAttribute('aria-labelledby',section.id+'-title');
- const heading=document.createElement('div');heading.className='section-head';const title=textElement('h2',c.categoria);title.id=section.id+'-title';heading.append(title,textElement('span',String(i+1).padStart(2,'0'),'section-index'));section.append(heading);
+ const section=document.createElement('section');section.className='section';section.id=categoryId(c);section.dataset.meal=c.tipo;section.setAttribute('aria-labelledby',section.id+'-title');
+ const heading=document.createElement('div');heading.className='section-head';const title=textElement('h2',c.categoria);title.id=section.id+'-title';
+ heading.append(title,textElement('span',c.tipo==='desayunos'?'DESAYUNOS':'COMIDAS','section-index'));section.append(heading);
  if(c.subtitle)section.append(textElement('p',c.subtitle,'subtitle'));
  const dishes=document.createElement('div');dishes.className='dishes';
  c.platillos.forEach(p=>{const article=document.createElement('article');article.className='dish';article.append(textElement('h3',p.nombre));if(p.desc)article.append(textElement('p',p.desc));dishes.append(article)});
  section.append(dishes);$('menu').append(section);
  });
- const hash=location.hash.slice(1);selectCategory(MENU.some(c=>slug(c.categoria)===hash)?hash:'todo',false);
+ readHash();
 }
 function shareUrl(){const u=new URL(location.href);u.search='';return u.href}
 async function copyLink(){try{await navigator.clipboard.writeText(shareUrl());notice('Enlace copiado. Pégalo en tu publicación o mensaje.')}catch{window.prompt('Copia este enlace para compartir el menú:',shareUrl())}}
-$('copy').onclick=copyLink;
-window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);selectCategory(MENU.some(c=>slug(c.categoria)===id)?id:'todo',false)});
-
 function applySearch(){
  const query=normalize($('dishSearch').value.trim());$('clearSearch').hidden=!query;
  if(!query){selectCategory(current,false);return}
  document.querySelectorAll('.cat').forEach(b=>b.setAttribute('aria-pressed','false'));
  let count=0;
  document.querySelectorAll('.section').forEach(section=>{
+ if(section.dataset.meal!==meal){section.hidden=true;return}
  let visible=0;
  section.querySelectorAll('.dish').forEach(dish=>{const match=normalize(dish.textContent).includes(query);dish.hidden=!match;if(match)visible++});
  section.hidden=visible===0;count+=visible;
  });
- $('searchStatus').textContent=count?count+' platillo'+(count===1?'':'s')+' encontrado'+(count===1?'':'s'):'No encontramos ese platillo. Prueba con otro nombre o ingrediente.';
+ $('searchStatus').textContent=count?count+' platillo'+(count===1?'':'s')+' encontrado'+(count===1?'':'s')+' en '+meal:'No encontramos ese platillo en '+meal+'. Prueba con otro nombre o cambia de menú.';
 }
+$('copy').onclick=copyLink;
+window.addEventListener('hashchange',readHash);
+document.querySelectorAll('.meal-btn').forEach(b=>b.onclick=()=>selectMeal(b.dataset.meal));
 $('dishSearch').addEventListener('input',applySearch);
 $('clearSearch').onclick=()=>{selectCategory('todo',false);$('dishSearch').focus()};
 render();
+
 </script>
 </body>
 </html>
